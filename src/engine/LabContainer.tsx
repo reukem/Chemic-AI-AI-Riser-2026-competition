@@ -255,7 +255,8 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
             
             const currentTableY = getTableBenchY();
             const clampedX = Math.max(70, Math.min(window.innerWidth - 180, newX));
-            const clampedY = Math.max(80, Math.min(currentTableY, newY));
+            // Strictly constrain Y to the tabletop: allow only a subtle tactile 30px lift during pick-up
+            const clampedY = Math.max(currentTableY - 30, Math.min(currentTableY, newY));
             
             setLiveDragPos({ x: clampedX, y: clampedY });
             dragXRef.current = clampedX;
@@ -476,7 +477,7 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
 
     const tableBenchY = getTableBenchY();
     const currentX = (isDragging || isSnapping) && liveDragPos ? liveDragPos.x : (container?.x ?? 500);
-    const currentY = (isDragging || isSnapping) && liveDragPos ? liveDragPos.y : (container?.y ?? tableBenchY);
+    const currentY = (isDragging || isSnapping) && liveDragPos ? liveDragPos.y : tableBenchY;
 
     const isExploding = activeEffect === 'explosion' && activeEffectContainerId === id;
 
@@ -508,7 +509,7 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 e.stopPropagation();
                 setSelectedContainerId(id);
             }}
-            className={`pointer-events-auto container-wrapper ${isFlask ? 'flask-wrapper' : 'beaker-wrapper'} ${isDragging ? 'opacity-90 scale-105' : ''} ${!isDragging && !isSnapping ? 'hover:-translate-y-2' : ''} ${isExploding ? 'animate-pulse drop-shadow-[0_0_30px_rgba(245,158,11,0.85)]' : ''} ${isSelected ? 'ring-2 ring-cyan-400/90 shadow-[0_0_30px_rgba(6,182,212,0.5)]' : ''}`}
+            className={`pointer-events-auto container-wrapper ${isFlask ? 'flask-wrapper' : 'beaker-wrapper'} ${isDragging ? 'opacity-90 scale-105' : ''} ${!isDragging && !isSnapping ? 'hover:-translate-y-2' : ''} ${isExploding ? 'animate-pulse drop-shadow-[0_0_30px_rgba(245,158,11,0.85)]' : ''}`}
             style={{
                 position: 'absolute',
                 left: `${currentX}px`,
@@ -522,60 +523,6 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
         >
-            {/* Interactive Active Vessel Toolbar */}
-            {isSelected && (
-                <div 
-                    onClick={(e) => e.stopPropagation()}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    className="absolute -top-12 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#050f1e]/90 border border-cyan-500/60 rounded-full px-2.5 py-1 backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.4)] z-50 whitespace-nowrap cursor-default animate-fade-in"
-                >
-                    <span className="text-[9px] font-mono font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                        {isVi ? 'Đang Chọn' : 'Active'}
-                    </span>
-                    <span className="text-cyan-800 text-[10px]">|</span>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            clearContainer(id);
-                        }}
-                        className="text-[10px] text-slate-300 hover:text-amber-400 transition-colors px-1 font-mono flex items-center gap-0.5"
-                        title={isVi ? 'Đổ bỏ hóa chất trong bình' : 'Dump contents'}
-                    >
-                        <span>⌫</span>
-                        <span>{isVi ? 'Đổ sạch' : 'Dump'}</span>
-                    </button>
-                    <span className="text-cyan-800 text-[10px]">|</span>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            removeContainer(id);
-                        }}
-                        className="text-[10px] text-rose-400 hover:text-rose-300 transition-colors px-1 font-mono flex items-center gap-0.5"
-                        title={isVi ? 'Xóa bỏ dụng cụ này' : 'Remove glassware'}
-                    >
-                        <span>🗑️</span>
-                        <span>{isVi ? 'Xóa' : 'Delete'}</span>
-                    </button>
-                    {container.volume > 0 && (
-                        <>
-                            <span className="text-cyan-800 text-[10px]">|</span>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowBreakdown(!showBreakdown);
-                                }}
-                                className={`text-[10px] px-1 font-mono flex items-center gap-0.5 transition-colors ${showBreakdown ? 'text-cyan-300 font-bold' : 'text-slate-400 hover:text-cyan-300'}`}
-                                title={isVi ? 'Xem chi tiết thành phần & ion' : 'Inspect contents & telemetry'}
-                            >
-                                <span>🔬</span>
-                                <span>{isVi ? 'Phân tích' : 'Inspect'}</span>
-                            </button>
-                        </>
-                    )}
-                </div>
-            )}
 
             {/* Contents Breakdown Popover */}
             {showBreakdown && container.volume > 0 && (
@@ -631,67 +578,7 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 </div>
             )}
 
-            {/* Thermal / Hotplate Heating Stage */}
-            <div 
-                className="absolute -bottom-8 left-1/2 w-36 pointer-events-none select-none z-10 flex flex-col items-center"
-                style={{
-                    transform: `translateX(-50%) scale(${isDragging ? 0.95 : 1})`,
-                    opacity: isDragging ? 0.4 : 1,
-                    transition: 'all 0.25s ease-out'
-                }}
-            >
-                {/* Ceramic Top Plate with Incandescent Heat Coil / Cryo Frost Glow */}
-                <div 
-                    className="w-full h-7 rounded-2xl border border-slate-600 bg-gradient-to-b from-[#252c38] via-[#161a24] to-[#0c0f16] shadow-2xl relative flex items-center justify-center transition-all duration-300 overflow-hidden"
-                    style={{
-                        boxShadow: isHot 
-                            ? `0 0 25px rgba(239, 68, 68, ${heatFactor * 0.9}), 0 4px 12px rgba(0,0,0,0.8)` 
-                            : isCold 
-                                ? '0 0 20px rgba(56, 189, 248, 0.7), 0 4px 12px rgba(0,0,0,0.8)' 
-                                : '0 4px 15px rgba(0,0,0,0.6)'
-                    }}
-                >
-                    {/* Glowing Nichrome Heating Spiral Coil under Quartz Surface */}
-                    {isHot && (
-                        <div 
-                            className="absolute inset-x-2 h-2 rounded-full blur-[2px] transition-all duration-300 pointer-events-none"
-                            style={{
-                                background: `radial-gradient(ellipse at center, rgba(254, 240, 138, 1) 0%, rgba(249, 115, 22, 0.9) 50%, rgba(220, 38, 38, 0.8) 100%)`,
-                                opacity: Math.max(0.3, heatFactor),
-                                filter: `drop-shadow(0 0 6px rgba(239, 68, 68, ${heatFactor}))`
-                            }}
-                        />
-                    )}
 
-                    {/* Cryogenic Frost Ring */}
-                    {isCold && (
-                        <div className="absolute inset-0 bg-cyan-400/20 blur-sm rounded-xl pointer-events-none" />
-                    )}
-
-                    {/* Integrated Micro-OLED Temperature Display */}
-                    <div className="z-10 flex items-center gap-1 font-mono text-[9px] font-black tracking-wider bg-black/70 px-2 py-0.5 rounded-md border border-slate-700">
-                        <span style={{ 
-                            color: isHot ? '#f87171' : isCold ? '#38bdf8' : '#34d399' 
-                        }}>
-                            {currentTemp}°C
-                        </span>
-                        <span className="text-[7px] text-slate-400">
-                            {currentPressure.toFixed(1)}atm
-                        </span>
-                    </div>
-
-                    {/* Magnetic Stirrer RPM */}
-                    <div className="flex items-center gap-1 text-slate-400">
-                        <span className="text-[9px] animate-spin" style={{ animationDuration: '3s' }}>⎈</span>
-                        <span className="font-bold">1200 RPM</span>
-                    </div>
-
-                    {/* Brand Badge */}
-                    <div className="hidden sm:block text-[8px] font-black tracking-widest text-slate-500 uppercase">
-                        CHEMIC-STIR V2
-                    </div>
-                </div>
-            </div>
 
             {/* Shadow beneath vessel */}
             <div 

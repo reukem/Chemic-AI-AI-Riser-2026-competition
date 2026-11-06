@@ -49,11 +49,11 @@ export interface Container {
 
 /**
  * Universally computed laboratory workbench table surface Y coordinate.
- * Raised to elevate the hotplate and vessels proudly above the bottom status bar.
+ * Grounded to seat beakers and flasks solidly onto the tabletop surface.
  */
 export const getTableBenchY = (): number => {
-    const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
-    return Math.max(120, Math.round(vh * 0.68 - 270));
+    const vh = typeof window !== 'undefined' ? window.innerHeight : 800;
+    return Math.max(250, vh - 220);
 };
 
 /**
