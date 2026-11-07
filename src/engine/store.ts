@@ -43,11 +43,11 @@ export interface Container {
 
 /**
  * Universally computed laboratory workbench table surface Y coordinate.
- * Raised to elevate the hotplate and vessels proudly above the bottom status bar.
+ * Seated firmly on the 28vh 3D holographic workbench deck above the bottom status bar.
  */
 export const getTableBenchY = (): number => {
     const vh = typeof window !== 'undefined' ? window.innerHeight : 900;
-    return Math.max(120, Math.round(vh * 0.68 - 270));
+    return Math.max(120, Math.round(vh * 0.78 - 270));
 };
 
 /**

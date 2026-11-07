@@ -12,6 +12,22 @@ const LabCanvas: React.FC = () => {
     const [draggingContainerId, setDraggingContainerId] = useState<number | null>(null);
     const cursorLightRef = useRef<HTMLDivElement>(null);
 
+    // Keep resting vessels anchored to the tabletop surface on window/fullscreen resize
+    useEffect(() => {
+        const handleResize = () => {
+            const state = useSimulationStore.getState();
+            const newTableY = getTableBenchY();
+            const updated = state.containers.map(c => ({
+                ...c,
+                x: Math.max(70, Math.min(window.innerWidth - 220, c.x)),
+                y: newTableY
+            }));
+            useSimulationStore.setState({ containers: updated });
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Evaporation simulation tick loop
     useEffect(() => {
         const interval = setInterval(() => {
@@ -115,23 +131,23 @@ const LabCanvas: React.FC = () => {
                 ))}
             </div>
 
-            {/* Holographic 3D Workbench Floor / Table Stage (Raised 36vh with Illuminated Horizon Rim) */}
+            {/* Holographic 3D Workbench Floor / Table Stage (28vh with Illuminated Horizon Rim) */}
             <div 
-                className="absolute bottom-0 left-0 right-0 h-[36vh] desk-surface z-0 pointer-events-none"
+                className="absolute bottom-0 left-0 right-0 h-[28vh] desk-surface z-0 pointer-events-none"
                 style={{ 
                     borderTop: '2px solid rgba(34, 211, 238, 0.35)',
                     boxShadow: '0 -15px 40px rgba(6, 182, 212, 0.15)',
-                    background: 'linear-gradient(to top, rgba(4, 15, 30, 0.95) 0%, rgba(2, 8, 18, 0.98) 70%, rgba(1, 4, 10, 0.99) 100%)',
+                    background: 'linear-gradient(to top, rgba(4, 15, 30, 0.96) 0%, rgba(3, 10, 22, 0.98) 65%, rgba(2, 6, 14, 0.99) 100%)',
                     perspective: '600px',
                 }}
             >
                 {/* Subtle perspective AR grid lines */}
                 <div 
-                    className="absolute inset-0 opacity-25"
+                    className="absolute -inset-x-[15%] top-0 h-[240%] opacity-25"
                     style={{
                         backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.25) 1px, transparent 1px)',
                         backgroundSize: '48px 48px',
-                        transform: 'perspective(500px) rotateX(50deg)',
+                        transform: 'perspective(500px) rotateX(55deg)',
                         transformOrigin: 'top center'
                     }}
                 />

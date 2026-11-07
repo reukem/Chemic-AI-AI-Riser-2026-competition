@@ -333,28 +333,25 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
             dragXRef.current = clampedX;
         };
 
-        const handlePointerUp = (e: PointerEvent) => {
+        const handlePointerUp = () => {
             if (!isDragging) return;
             
             const currentTableY = getTableBenchY();
             const finalX = dragXRef.current;
             const finalY = currentTableY; // Firmly seated on table surface!
             
-            setIsSnapping(true);
-            setLiveDragPos({ x: finalX, y: finalY });
-            
-            setTimeout(() => {
-                setIsSnapping(false);
-                setLiveDragPos(null);
-                updateContainerPosition(id, finalX, finalY);
-                useSimulationStore.getState().setDraggingContainerId(null);
-                if (onDragEnd) onDragEnd();
-            }, 200);
+            setIsSnapping(false);
+            setLiveDragPos(null);
+            updateContainerPosition(id, finalX, finalY);
+            useSimulationStore.getState().setDraggingContainerId(null);
+            if (onDragEnd) onDragEnd();
         };
 
         if (isDragging) {
             window.addEventListener('pointermove', handlePointerMove);
             window.addEventListener('pointerup', handlePointerUp);
+            window.addEventListener('pointercancel', handlePointerUp);
+            window.addEventListener('blur', handlePointerUp);
         } else if (container?.x !== undefined) {
             dragXRef.current = container.x;
         }
@@ -362,6 +359,8 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
         return () => {
             window.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('pointerup', handlePointerUp);
+            window.removeEventListener('pointercancel', handlePointerUp);
+            window.removeEventListener('blur', handlePointerUp);
         };
     }, [isDragging, id, onDragEnd, updateContainerPosition, container?.x]);
 
@@ -878,15 +877,42 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
         ? `linear-gradient(180deg, rgba(224, 242, 254, 0.12) 0%, rgba(186, 230, 253, 0.22) 55%, rgba(125, 211, 252, 0.35) 100%)`
         : `linear-gradient(180deg, rgba(${Math.min(255, effectiveR + 45)}, ${Math.min(255, effectiveG + 45)}, ${Math.min(255, effectiveB + 45)}, 0.82) 0%, rgba(${effectiveR}, ${effectiveG}, ${effectiveB}, 0.9) 55%, rgba(${Math.max(0, effectiveR - 45)}, ${Math.max(0, effectiveG - 45)}, ${Math.max(0, effectiveB - 45)}, 0.98) 100%)`);
 
-    const backWaveColor = `rgb(${Math.max(0, effectiveR - 30)}, ${Math.max(0, effectiveG - 30)}, ${Math.max(0, effectiveB - 30)})`;
-    const frontWaveColor = `rgb(${Math.min(255, effectiveR + 25)}, ${Math.min(255, effectiveG + 25)}, ${Math.min(255, effectiveB + 25)})`;
+    // Dynamic top surface fluid optical color and transparency matching
+    let topR = effectiveR;
+    let topG = effectiveG;
+    let topB = effectiveB;
+    let topAlpha = 0.82;
+
+    if (hasImmiscibleLayers && organicOpt) {
+        const orgRgb = hexToRgb(organicColor);
+        topR = orgRgb.r;
+        topG = orgRgb.g;
+        topB = orgRgb.b;
+        topAlpha = Math.max(0.2, Math.min(0.85, +(1.0 - (organicOpt.transmission ?? 0.85)).toFixed(2)));
+    } else if (hasUniversalIndicator) {
+        topAlpha = 0.85;
+    } else if (hasPhenolphthalein && !activePrecipitate) {
+        topAlpha = container.ph >= 8.2 ? 0.85 : 0.18;
+    } else if (isStarchDeheated) {
+        topAlpha = 0.20;
+    } else if (isClearLiquid) {
+        topR = 224;
+        topG = 242;
+        topB = 254;
+        topAlpha = 0.18; // Crystal-clear matching transparency for water / acids
+    } else {
+        topAlpha = Math.max(0.35, Math.min(0.88, +(1.05 - dominantOpt.transmission).toFixed(2)));
+    }
+
+    const backWaveColor = `rgba(${Math.max(0, topR - 25)}, ${Math.max(0, topG - 25)}, ${Math.max(0, topB - 25)}, ${(topAlpha * 0.55).toFixed(2)})`;
+    const frontWaveColor = `rgba(${Math.min(255, topR + 20)}, ${Math.min(255, topG + 20)}, ${Math.min(255, topB + 20)}, ${topAlpha.toFixed(2)})`;
 
     const label = id === 0 ? 'Alpha' : id === 1 ? 'Beta' : id === 2 ? 'Gamma' : 'Delta';
     const isFlask = container.type === 'flask';
 
     const tableBenchY = getTableBenchY();
-    const currentX = (isDragging || isSnapping) && liveDragPos ? liveDragPos.x : (container?.x ?? 500);
-    const currentY = (isDragging || isSnapping) && liveDragPos ? liveDragPos.y : (container?.y ?? tableBenchY);
+    const currentX = isDragging && liveDragPos ? liveDragPos.x : (container?.x ?? 500);
+    const currentY = isDragging && liveDragPos ? liveDragPos.y : tableBenchY;
 
     const isExploding = activeEffect === 'explosion' && activeEffectContainerId === id;
 
@@ -936,7 +962,7 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 e.stopPropagation();
                 setSelectedContainerId(id);
             }}
-            className={`pointer-events-auto container-wrapper ${isFlask ? 'flask-wrapper' : 'beaker-wrapper'} ${isDragging ? 'opacity-90 scale-105' : ''} ${!isDragging && !isSnapping ? 'hover:-translate-y-2' : ''} ${isExploding ? 'animate-pulse drop-shadow-[0_0_30px_rgba(245,158,11,0.85)]' : ''} ${isSelected ? 'ring-2 ring-cyan-400/90 shadow-[0_0_30px_rgba(6,182,212,0.5)]' : ''}`}
+            className={`pointer-events-auto container-wrapper ${isFlask ? 'flask-wrapper' : 'beaker-wrapper'} ${isDragging ? 'opacity-90 scale-105' : ''} ${!isDragging && !isSnapping ? 'hover:-translate-y-2' : ''} ${isExploding ? 'animate-pulse drop-shadow-[0_0_30px_rgba(245,158,11,0.85)]' : ''}`}
             style={{
                 position: 'absolute',
                 left: `${currentX}px`,
@@ -1322,11 +1348,11 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                         <>
                             {/* Layer 1: Dynamic Sloshing Ambient Back Wave (Coupled 20-Node Physics) */}
                             <svg className="absolute -top-4 left-0 w-full h-9 pointer-events-none z-10 overflow-visible" viewBox="0 0 200 36" preserveAspectRatio="none">
-                                <path ref={backWaveRef} d="M 0,18 L 200,18 L 200,36 L 0,36 Z" fill={backWaveColor} opacity="0.65"></path>
+                                <path ref={backWaveRef} d="M 0,18 L 200,18 L 200,36 L 0,36 Z" fill={backWaveColor}></path>
                             </svg>
                             {/* Layer 2: Dynamic Sloshing Foreground Illuminated Crest Wave */}
                             <svg className="absolute -top-4 left-0 w-full h-9 pointer-events-none z-20 overflow-visible" viewBox="0 0 200 36" preserveAspectRatio="none">
-                                <path ref={frontWaveRef} d="M 0,18 L 200,18 L 200,36 L 0,36 Z" fill={frontWaveColor} opacity="0.92"></path>
+                                <path ref={frontWaveRef} d="M 0,18 L 200,18 L 200,36 L 0,36 Z" fill={frontWaveColor}></path>
                             </svg>
                             {/* Layer 3: Physical Capillary Concave Meniscus Specular Curvature */}
                             <svg className="absolute -top-4 left-0 w-full h-9 pointer-events-none z-30 overflow-visible" viewBox="0 0 200 36" preserveAspectRatio="none">
@@ -1334,13 +1360,13 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                                     ref={meniscusPathRef}
                                     d="M 0,14 Q 100,18 200,14" 
                                     fill="none" 
-                                    stroke="rgba(255,255,255,0.95)" 
-                                    strokeWidth="2.2" 
+                                    stroke="rgba(255,255,255,0.6)" 
+                                    strokeWidth="1.6" 
                                     strokeLinecap="round"
-                                    style={{ filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.85))' }}
+                                    style={{ filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.4))' }}
                                 />
                             </svg>
-                            <div className="liquid-meniscus-sheen" />
+                            <div className="liquid-meniscus-sheen" style={{ opacity: isClearLiquid ? 0.35 : 0.7 }} />
                         </>
                     )}
 

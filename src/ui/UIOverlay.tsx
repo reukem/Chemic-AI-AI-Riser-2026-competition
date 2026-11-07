@@ -19,6 +19,7 @@ import { GalvanicCellModal } from './GalvanicCellModal';
 import { ReactionKineticsModal } from './ReactionKineticsModal';
 import { VseprOrbitalModal } from './VseprOrbitalModal';
 import SettingsModal from './SettingsModal';
+import ChemicLogo from './components/ChemicLogo';
 import { t } from '../i18n/uiTranslations';
 
 const PerformanceHud: React.FC = () => {
@@ -218,29 +219,19 @@ const UIOverlay: React.FC = () => {
             <div className="absolute top-4 left-4 flex flex-col gap-3 pointer-events-auto w-80">
                 
                 {/* Title & Pause Capsule */}
-                <div className="bg-[#050e1c]/85 backdrop-blur-xl border border-cyan-900/50 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.6)] relative overflow-hidden flex items-center justify-between">
-                    <div className="absolute -top-12 -left-12 w-28 h-28 bg-cyan-500/15 rounded-full blur-xl pointer-events-none" />
+                <div className="scifi-hud-card bg-[#030914]/90 backdrop-blur-2xl border border-cyan-500/30 rounded-2xl p-3.5 shadow-[0_0_35px_rgba(0,0,0,0.85)] relative overflow-hidden flex items-center justify-between group">
+                    <div className="absolute -top-12 -left-12 w-28 h-28 bg-cyan-500/15 rounded-full blur-xl pointer-events-none group-hover:bg-cyan-400/25 transition-colors" />
                     
-                    <div>
-                        <h1 className="text-2xl font-black tracking-wider font-mono chemic-gradient-cycle">
-                            CHEMIC-AI
-                        </h1>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee] animate-pulse" />
-                            <span className="text-[9px] text-cyan-300/80 font-mono font-bold tracking-widest uppercase">
-                                {t('appSubtitle', language)}
-                            </span>
-                        </div>
-                    </div>
+                    <ChemicLogo size="nav" isVi={isVi} />
 
                     {/* Pause Button */}
                     <button 
                         onClick={() => { audioManager.playClick(); togglePause(); }}
                         onMouseEnter={() => audioManager.playHover()}
-                        className="w-10 h-10 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/25 border border-cyan-500/30 hover:border-cyan-400 flex items-center justify-center text-cyan-300 transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] group active:scale-95"
+                        className="w-9 h-9 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/25 border border-cyan-500/40 hover:border-cyan-300 flex items-center justify-center text-cyan-300 transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] group active:scale-95 shrink-0 ml-2"
                         title={isVi ? 'Tạm dừng mô phỏng (ESC)' : 'Pause Simulation (ESC)'}
                     >
-                        <span className="font-mono font-black text-sm">❚❚</span>
+                        <span className="font-mono font-black text-xs tracking-tighter">❚❚</span>
                     </button>
                 </div>
 

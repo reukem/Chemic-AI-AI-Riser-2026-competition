@@ -23,6 +23,7 @@ import { FlameSpectroscopyModal } from './FlameSpectroscopyModal';
 import { GalvanicCellModal } from './GalvanicCellModal';
 import { ReactionKineticsModal } from './ReactionKineticsModal';
 import { VseprOrbitalModal } from './VseprOrbitalModal';
+import ChemicLogo from './components/ChemicLogo';
 
 // Living Ambient Particle Field with Quantum Dust & Radiant Gradient Sparks
 const CanvasParticles: React.FC = () => {
@@ -32,13 +33,13 @@ const CanvasParticles: React.FC = () => {
   const trailSparksRef = useRef<any[]>([]);
   const mouseRef = useRef({ x: 0, y: 0, lastX: 0, lastY: 0 });
 
-  // Authentic Chemic-AI Color Cycle Gradient Palette
+  // Authentic Chemic-AI Refined Quantum Palette (Calm Dark Neon Cyan)
   const GRADIENT_PALETTE = [
     { r: 34, g: 211, b: 238 },   // Ice Cyan (#22d3ee)
     { r: 56, g: 189, b: 248 },   // Sky Blue (#38bdf8)
-    { r: 168, g: 85, b: 247 },   // Lavender Violet (#a855f7)
-    { r: 236, g: 72, b: 153 },   // Cyber Magenta (#ec4899)
-    { r: 251, g: 191, b: 36 },   // Solar Amber Gold (#fbbf24)
+    { r: 6, g: 182, b: 212 },    // Quantum Cyan (#06b6d4)
+    { r: 59, g: 130, b: 246 },   // Deep Cobalt Blue (#3b82f6)
+    { r: 16, g: 185, b: 129 },   // Catalyst Emerald (#10b981)
     { r: 255, g: 255, b: 255 }   // Starlight Diamond White
   ];
 
@@ -797,7 +798,7 @@ const MainMenu: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="absolute bottom-[39%] right-[52%] xl:right-[55%] w-[430px] max-w-[85vw] bg-gradient-to-b from-[#07172c]/95 via-[#040e1c]/95 to-[#020710]/95 border-2 border-cyan-500/40 p-5 rounded-3xl backdrop-blur-2xl shadow-[0_0_40px_rgba(0,0,0,0.85)] z-50 overflow-hidden pointer-events-auto"
+            className="scifi-hud-card absolute bottom-[39%] right-[52%] xl:right-[55%] w-[430px] max-w-[85vw] bg-gradient-to-b from-[#041122]/96 via-[#020914]/96 to-[#01040a]/98 border border-cyan-400/45 p-5 rounded-3xl backdrop-blur-2xl shadow-[0_0_45px_rgba(0,0,0,0.92)] z-50 overflow-hidden pointer-events-auto"
           >
             {/* Ambient inner rim glow */}
             <div className="absolute -top-12 -right-12 w-28 h-28 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
@@ -854,48 +855,40 @@ const MainMenu: React.FC = () => {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="w-full max-w-[530px] xl:max-w-[570px] pointer-events-auto flex flex-col gap-3 md:gap-3.5 my-auto"
         >
-          {/* Futuristic AAA Holographic Title Plate */}
-          <div className="relative p-6 md:p-6.5 rounded-3xl bg-gradient-to-b from-[#061528]/92 via-[#030c18]/92 to-[#020610]/96 backdrop-blur-2xl border-2 border-cyan-500/35 shadow-[0_0_45px_rgba(0,0,0,0.9)] overflow-hidden group">
+          {/* Futuristic AAA Holographic Title Plate - Refined Sci-Fi */}
+          <div className="scifi-hud-card relative p-6 md:p-6.5 rounded-3xl bg-gradient-to-b from-[#051122]/95 via-[#020914]/95 to-[#01040a]/98 backdrop-blur-2xl border-2 border-cyan-500/35 shadow-[0_0_50px_rgba(0,0,0,0.92)] overflow-hidden group">
             {/* Ambient cyber grid watermark & glowing flare */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-            <div className="absolute -top-16 -right-16 w-44 h-44 bg-cyan-500/20 rounded-full blur-[45px] group-hover:bg-cyan-400/30 transition-colors duration-500 pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(6,182,212,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(6,182,212,0.04)_1px,transparent_1px)] bg-[size:22px_22px] pointer-events-none" />
+            <div className="absolute -top-16 -right-16 w-52 h-52 bg-cyan-500/15 rounded-full blur-[55px] group-hover:bg-cyan-400/25 transition-colors duration-500 pointer-events-none" />
 
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" />
-                <h2 className="text-cyan-400 font-mono text-[11px] tracking-[0.3em] uppercase opacity-90 font-bold">
-                  {isVi ? 'DỰ ÁN PHÒNG THÍ NGHIỆM LƯỢNG TỬ' : 'QUANTUM REALITY LAB // v2.5'}
-                </h2>
-              </div>
+              {/* Brand Logo & Wordmark */}
+              <ChemicLogo size="hero" isVi={isVi} />
 
-              <div className="relative inline-block mb-3">
-                <div className="absolute -inset-3 chemic-aura-cycle rounded-3xl pointer-events-none" />
-                <h1 className="relative text-4xl md:text-5xl font-black tracking-tight uppercase chemic-gradient-cycle select-none">
-                  CHEMIC<span className="opacity-90 animate-pulse">_</span>AI
-                </h1>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <div className="inline-flex items-center gap-1.5 bg-cyan-950/80 border border-cyan-500/40 px-3 py-1 rounded-xl text-cyan-300 font-mono text-[11px] tracking-wider uppercase shadow-[0_0_12px_rgba(34,211,238,0.2)]">
-                  <span>⚛</span>
-                  <span>{isVi ? 'MÔ PHỎNG THỰC' : 'QUANTUM ENGINE'}</span>
+              <div className="flex items-center gap-2.5 mt-3.5">
+                <div className="inline-flex items-center gap-1.5 bg-cyan-950/70 border border-cyan-500/40 px-3 py-1 rounded-xl text-cyan-300 font-mono text-[11px] tracking-wider uppercase shadow-[0_0_12px_rgba(34,211,238,0.2)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                  <span>{isVi ? 'MÔ PHỎNG THỰC TẾ' : 'QUANTUM ENGINE'}</span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1 rounded-xl text-emerald-300 font-mono text-[11px] tracking-wider uppercase">
-                  <span>✓</span>
-                  <span>IUPAC 118</span>
+                <div className="inline-flex items-center gap-1.5 bg-slate-900/80 border border-cyan-800/40 px-3 py-1 rounded-xl text-slate-300 font-mono text-[11px] tracking-wider uppercase">
+                  <span className="text-cyan-400 font-bold">✓</span>
+                  <span>IUPAC 118 REAGENTS</span>
                 </div>
               </div>
 
-              {/* Google AI Studio & Workspace Action Bar */}
-              <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-cyan-900/40">
+              {/* Refined Sci-Fi Action Bar with Bespoke SVG Vector Icons */}
+              <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-3 border-t border-cyan-900/40">
                 <button
                   type="button"
                   onClick={() => { audioManager.playClick(); setScannerOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-400/50 hover:border-cyan-300 text-cyan-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-cyan-950/90 border border-cyan-500/35 hover:border-cyan-300 text-cyan-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(34,211,238,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Quét đề bài Hóa học với Gemini 2.5 Flash' : 'Scan homework with Gemini 2.5 Flash'}
                 >
-                  <span>📸</span>
+                  <svg className="w-3.5 h-3.5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
                   <span>{isVi ? 'QUÉT ĐỀ (GEMINI)' : 'GEMINI VISION'}</span>
                 </button>
 
@@ -903,10 +896,15 @@ const MainMenu: React.FC = () => {
                   type="button"
                   onClick={() => { audioManager.playClick(); setReportOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-950/80 hover:bg-blue-900 border border-blue-400/50 hover:border-blue-300 text-blue-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(59,130,246,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-blue-950/90 border border-blue-500/35 hover:border-blue-300 text-blue-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(59,130,246,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Xem & Xuất báo cáo thực nghiệm Google Docs' : 'View & Export Google Docs Lab Report'}
                 >
-                  <span>📄</span>
+                  <svg className="w-3.5 h-3.5 text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
                   <span>{isVi ? 'BÁO CÁO (DOCS)' : 'LAB REPORT'}</span>
                 </button>
 
@@ -925,10 +923,12 @@ const MainMenu: React.FC = () => {
                   type="button"
                   onClick={() => { audioManager.playClick(); setFlameOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/80 hover:bg-amber-900 border border-amber-400/50 hover:border-amber-300 text-amber-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-amber-950/90 border border-amber-500/35 hover:border-amber-300 text-amber-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(245,158,11,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Đốt Màu Ngọn Lửa & Quang Phổ Cation' : 'Bunsen Flame & Emission Spectroscopy'}
                 >
-                  <span>🔥</span>
+                  <svg className="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                  </svg>
                   <span>{isVi ? 'QUANG PHỔ' : 'FLAME'}</span>
                 </button>
 
@@ -936,10 +936,12 @@ const MainMenu: React.FC = () => {
                   type="button"
                   onClick={() => { audioManager.playClick(); setGalvanicOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-400/50 hover:border-cyan-300 text-cyan-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-cyan-950/90 border border-cyan-500/35 hover:border-cyan-300 text-cyan-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(34,211,238,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Pin Điện Hóa Daniell & Bình Điện Phân' : 'Galvanic Daniell Cell & Electrolysis'}
                 >
-                  <span>⚡</span>
+                  <svg className="w-3.5 h-3.5 text-cyan-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
                   <span>{isVi ? 'PIN ĐIỆN' : 'GALVANIC'}</span>
                 </button>
 
@@ -947,10 +949,13 @@ const MainMenu: React.FC = () => {
                   type="button"
                   onClick={() => { audioManager.playClick(); setKineticsOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/50 hover:border-emerald-300 text-emerald-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-emerald-950/90 border border-emerald-500/35 hover:border-emerald-300 text-emerald-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(16,185,129,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Đồ Thị Động Học ODE & Cân Bằng Le Chatelier' : 'Live ODE Kinetics & Le Chatelier'}
                 >
-                  <span>📈</span>
+                  <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="M19 9l-5 5-4-4-7 7" />
+                  </svg>
                   <span>{isVi ? 'ĐỘNG HỌC' : 'KINETICS'}</span>
                 </button>
 
@@ -958,17 +963,21 @@ const MainMenu: React.FC = () => {
                   type="button"
                   onClick={() => { audioManager.playClick(); setVseprOpen(true); }}
                   onMouseEnter={() => audioManager.playHover()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-400/50 hover:border-purple-300 text-purple-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)] active:scale-95 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#041220]/80 hover:bg-cyan-950/90 border border-cyan-400/40 hover:border-cyan-200 text-cyan-200 text-[11px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)] active:scale-95 cursor-pointer"
                   title={isVi ? 'Mô Hình 3D VSEPR & Lai Hóa Orbital' : '3D VSEPR & Hybrid Orbitals'}
                 >
-                  <span>🔮</span>
+                  <svg className="w-3.5 h-3.5 text-cyan-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(30 12 12)" />
+                    <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(-30 12 12)" />
+                  </svg>
                   <span>{isVi ? 'VSEPR 3D' : 'VSEPR 3D'}</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Interactive Navigation Selector Buttons (MiSide Tactile Selector Cards) */}
+          {/* Interactive Navigation Selector Buttons (Refined Sci-Fi Command Deck) */}
           <div className="flex flex-col gap-2.5">
             {/* Primary Hero Button: START ENGINE */}
             <motion.button
@@ -977,22 +986,25 @@ const MainMenu: React.FC = () => {
               onClick={handleStart}
               onMouseEnter={() => { audioManager.playHover(); setCurrentMode('start'); }}
               onMouseLeave={() => setCurrentMode('idle')}
-              className="group relative px-6 py-4 md:py-4.5 bg-gradient-to-r from-[#092542]/95 via-[#061c32]/95 to-[#041122]/95 border-2 border-cyan-400/70 hover:border-cyan-300 rounded-3xl text-left transition-all duration-300 backdrop-blur-xl shadow-[0_0_30px_rgba(34,211,238,0.25)] hover:shadow-[0_0_45px_rgba(34,211,238,0.55)] overflow-hidden cursor-pointer"
+              className="scifi-hud-card group relative px-6 py-4 md:py-4.5 bg-gradient-to-r from-[#041a30]/95 via-[#021324]/95 to-[#010a14]/98 border-2 border-cyan-400/60 hover:border-cyan-300 rounded-3xl text-left transition-all duration-300 backdrop-blur-xl shadow-[0_0_35px_rgba(34,211,238,0.28)] hover:shadow-[0_0_50px_rgba(34,211,238,0.55)] overflow-hidden cursor-pointer"
             >
               {/* Laser sweep animation on hover */}
               <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-[100%] group-hover:animate-[sweep_1.4s_ease-in-out_infinite]" />
               
               <div className="relative z-10 flex items-center justify-between">
                 <div>
-                  <span className="block font-mono text-cyan-400 text-[11px] tracking-[0.25em] uppercase mb-0.5 font-bold">
-                    {isVi ? 'KHỞI TẠO // VÀO PHÒNG LAB' : 'SEQUENCE: INITIATE LAB'}
+                  <span className="block font-mono text-cyan-400 text-[10.5px] tracking-[0.28em] uppercase mb-0.5 font-bold">
+                    {isVi ? 'KHỞI TẠO // BÀN THỰC NGHIỆM' : 'INITIALIZE WORKBENCH // PRIMARY PROTOCOL'}
                   </span>
-                  <span className="block font-black text-2xl md:text-3xl text-white tracking-wider uppercase group-hover:text-cyan-100 transition-colors">
+                  <span className="block font-black text-2xl md:text-3xl text-white tracking-wider uppercase group-hover:text-cyan-100 transition-colors font-mono">
                     {isVi ? 'BẮT ĐẦU THÍ NGHIỆM' : 'START ENGINE'}
                   </span>
                 </div>
-                <div className="w-11 h-11 rounded-2xl bg-cyan-500/25 border border-cyan-400/50 group-hover:border-cyan-300 group-hover:bg-cyan-400 group-hover:text-black flex items-center justify-center text-cyan-300 group-hover:translate-x-1.5 transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.35)]">
-                  <span className="text-xl font-bold">➔</span>
+                <div className="w-11 h-11 rounded-2xl bg-cyan-500/20 border border-cyan-400/50 group-hover:border-cyan-300 group-hover:bg-cyan-400 group-hover:text-black flex items-center justify-center text-cyan-300 group-hover:translate-x-1.5 transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.35)]">
+                  <svg className="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
                 </div>
               </div>
             </motion.button>
@@ -1005,26 +1017,29 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setSocraticMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('socratic'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-rose-950/20 hover:bg-rose-900/30 border border-rose-900/50 hover:border-rose-500/80 border-l-4 border-l-rose-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(244,63,94,0.12)] hover:shadow-[0_0_25px_rgba(244,63,94,0.35)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-rose-400/70 border-l-4 border-l-rose-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-rose-950/70 border border-rose-800/70 text-rose-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-rose-400 group-hover:bg-rose-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-rose-400 group-hover:text-rose-200 transition-all shadow-inner">
                     01
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-rose-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors flex items-center gap-2">
+                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors flex items-center gap-2">
                       {isVi ? 'THÁCH THỨC SOCRATIC' : 'SOCRATIC CHALLENGE'}
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-red-500/20 border border-red-500/40 text-red-400 font-mono normal-case tracking-normal animate-pulse">
-                        {isVi ? '⚠ Không khuyến khích' : '⚠ Not recommended'}
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-rose-950/60 border border-rose-500/40 text-rose-300 font-mono font-bold uppercase tracking-wider">
+                        {isVi ? 'BẺ GÃY NGỘ NHẬN' : 'LOGIC PROTOCOL'}
                       </span>
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
-                      {isVi ? 'Chất vấn & Bẻ gãy ngộ nhận logic' : 'Strict Chemical Logic Interrogation'}
+                      {isVi ? 'Chất vấn sâu & Rèn luyện tư duy phản biện Hóa học' : 'Strict Chemical Logic Interrogation'}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-rose-400 group-hover:scale-110 group-hover:text-rose-200 transition-transform text-base md:text-lg">👁️</span>
+                  <svg className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  </svg>
                   <span className="text-rose-400/50 group-hover:text-rose-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
@@ -1035,23 +1050,31 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setLearningMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('learning'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-emerald-950/20 hover:bg-emerald-900/30 border border-emerald-900/50 hover:border-emerald-500/80 border-l-4 border-l-emerald-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(16,185,129,0.12)] hover:shadow-[0_0_25px_rgba(16,185,129,0.35)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-emerald-400/70 border-l-4 border-l-emerald-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-emerald-950/70 border border-emerald-800/70 text-emerald-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-emerald-400 group-hover:bg-emerald-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-emerald-400 group-hover:text-emerald-200 transition-all shadow-inner">
                     02
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-emerald-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
-                      {isVi ? 'PHÒNG CỐ VẤN HỌC TẬP' : 'LEARNING LAB & MENTOR'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                        {isVi ? 'PHÒNG CỐ VẤN HỌC TẬP' : 'LEARNING LAB & MENTOR'}
+                      </span>
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-mono font-bold uppercase tracking-wider">
+                        {isVi ? 'THPT QUỐC GIA' : 'AI TUTOR'}
+                      </span>
+                    </div>
                     <span className="text-xs text-slate-400 font-mono">
-                      {isVi ? 'Hỗ trợ giải bài tập & Luyện thi THPTQG' : 'Homework Assistant & Curriculum Tutor'}
+                      {isVi ? 'Hỗ trợ giải bài tập & Luyện thi THPTQG 2026-2027' : 'Homework Assistant & Curriculum Tutor'}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-emerald-400 group-hover:scale-110 group-hover:text-emerald-200 transition-transform text-base md:text-lg">🎓</span>
+                  <svg className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
                   <span className="text-emerald-400/50 group-hover:text-emerald-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
@@ -1062,14 +1085,14 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); setIsReagentDbOpen(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('reagent'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-cyan-950/20 hover:bg-cyan-900/30 border border-cyan-900/50 hover:border-cyan-500/80 border-l-4 border-l-cyan-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(6,182,212,0.12)] hover:shadow-[0_0_25px_rgba(6,182,212,0.35)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-cyan-400/70 border-l-4 border-l-cyan-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-cyan-950/70 border border-cyan-800/70 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-cyan-400 group-hover:bg-cyan-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-cyan-300 group-hover:text-cyan-100 transition-all shadow-inner">
                     03
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-cyan-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
                       {isVi ? 'TỪ ĐIỂN 118 NGUYÊN TỐ' : 'REAGENT DATABASE'}
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
@@ -1078,7 +1101,12 @@ const MainMenu: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-cyan-400 group-hover:scale-110 group-hover:text-cyan-200 transition-transform text-base md:text-lg">📖</span>
+                  <svg className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <ellipse cx="12" cy="12" rx="10" ry="4" />
+                    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)" />
+                    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" />
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                  </svg>
                   <span className="text-cyan-400/50 group-hover:text-cyan-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
@@ -1089,18 +1117,18 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setOrganicMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('organic'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-purple-950/20 hover:bg-purple-900/30 border border-purple-900/50 hover:border-purple-500/80 border-l-4 border-l-purple-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(168,85,247,0.12)] hover:shadow-[0_0_25px_rgba(168,85,247,0.35)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-purple-400/70 border-l-4 border-l-purple-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-purple-950/70 border border-purple-800/70 text-purple-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-purple-400 group-hover:bg-purple-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-purple-400 group-hover:text-purple-200 transition-all shadow-inner">
                     04
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-purple-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
                         {isVi ? 'HÓA HỌC HỮU CƠ' : 'ORGANIC CHEMISTRY'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-purple-500/30 text-purple-200 font-mono font-bold tracking-normal border border-purple-400/40">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-purple-950/60 border border-purple-500/40 text-purple-300 font-mono font-bold tracking-wider uppercase">
                         CRAFT / PUZZLE
                       </span>
                     </div>
@@ -1110,7 +1138,10 @@ const MainMenu: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-purple-400 group-hover:scale-110 group-hover:text-purple-200 transition-transform text-lg md:text-xl">⬡</span>
+                  <svg className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2l7.5 4.3v8.6L12 22l-7.5-4.3V6.3L12 2z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
                   <span className="text-purple-400/50 group-hover:text-purple-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
@@ -1121,18 +1152,18 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); setIsCurriculumOpen(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('learning'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-teal-950/25 hover:bg-teal-900/35 border border-teal-800/60 hover:border-teal-400 border-l-4 border-l-teal-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_20px_rgba(20,184,166,0.18)] hover:shadow-[0_0_30px_rgba(20,184,166,0.4)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-teal-400/70 border-l-4 border-l-teal-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(20,184,166,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-teal-950/80 border border-teal-600/80 text-teal-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-teal-300 group-hover:bg-teal-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-teal-400 group-hover:text-teal-200 transition-all shadow-inner">
                     05
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-teal-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
-                        {isVi ? 'GIÁO TRÌNH HÓA HỌC LỚP 8 - 12' : 'CHEMISTRY ACADEMY (8-12)'}
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                        {isVi ? 'GIÁO TRÌNH HÓA HỌC 8 - 12' : 'CHEMISTRY ACADEMY (8-12)'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-teal-500/30 text-teal-200 font-mono font-bold tracking-normal border border-teal-400/40">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-teal-950/60 border border-teal-500/40 text-teal-300 font-mono font-bold tracking-wider uppercase">
                         KẾT NỐI TRI THỨC
                       </span>
                     </div>
@@ -1142,7 +1173,10 @@ const MainMenu: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-teal-400 group-hover:scale-110 group-hover:text-teal-200 transition-transform text-lg md:text-xl">📚</span>
+                  <svg className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
                   <span className="text-teal-400/50 group-hover:text-teal-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
@@ -1153,18 +1187,18 @@ const MainMenu: React.FC = () => {
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setCalculatingMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('calculating'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-amber-950/25 hover:bg-amber-900/35 border border-amber-800/60 hover:border-amber-400 border-l-4 border-l-amber-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_20px_rgba(245,158,11,0.18)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-amber-400/70 border-l-4 border-l-amber-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(245,158,11,0.3)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-600/80 text-amber-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-amber-300 group-hover:bg-amber-900/80 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-amber-400 group-hover:text-amber-200 transition-all shadow-inner">
                     06
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-amber-200 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
                         {isVi ? 'CHẾ ĐỘ TÍNH TOÁN // BẢNG CÔNG THỨC' : 'CALCULATING MODE // FORMULA LAB'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-amber-500/30 text-amber-200 font-mono font-bold tracking-normal border border-amber-400/40">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-amber-950/60 border border-amber-500/40 text-amber-300 font-mono font-bold tracking-wider uppercase">
                         GDPT 2018
                       </span>
                     </div>
@@ -1174,7 +1208,12 @@ const MainMenu: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-amber-400 group-hover:scale-110 group-hover:text-amber-200 transition-transform text-lg md:text-xl">🧮</span>
+                  <svg className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="2" width="16" height="20" rx="2" />
+                    <line x1="8" y1="6" x2="16" y2="6" />
+                    <line x1="16" y1="14" x2="16" y2="18" />
+                    <path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01" />
+                  </svg>
                   <span className="text-amber-400/50 group-hover:text-amber-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
