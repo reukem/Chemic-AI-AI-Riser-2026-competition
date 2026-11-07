@@ -2,6 +2,9 @@
 ### *A High-Performance "Safe-Failure" Virtual Laboratory & AI Mentor for Secondary Chemistry Education*
 
 [![Build with Google AI](https://img.shields.io/badge/Google%20AI-Gemini%202.5%20Flash-4285F4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://reukem.github.io/latest-Chemic-AI-Version/)
+[![Container](https://img.shields.io/badge/Cloud%20Run-Ready-4285F4?style=for-the-badge&logo=google-cloud)](https://cloud.google.com/run)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)](Dockerfile)
 [![React](https://img.shields.io/badge/React%2018-TypeScript-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS%20v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
@@ -9,6 +12,7 @@
 
 > **#AIRiserVietnam** • **#BuildwithGoogleAI**  
 > *Authored by [Ngô Minh Thiên Bảo (reukem)](https://github.com/reukem)*  
+> **🌐 Live Cloud Deployment:** [https://reukem.github.io/latest-Chemic-AI-Version/](https://reukem.github.io/latest-Chemic-AI-Version/)  
 > **Repository:** [https://github.com/reukem/latest-Chemic-AI-Version](https://github.com/reukem/latest-Chemic-AI-Version)
 
 ---
@@ -177,6 +181,32 @@ npm run dev
 # 5. Build optimized production bundle
 npm run build
 ```
+
+### ☁️ Cloud Hosting & Deployment
+
+#### Option 1: Live Cloud URL (GitHub Pages)
+Chemic-AI is automatically built and deployed to GitHub Pages on every commit via GitHub Actions:
+- **Live URL:** [https://reukem.github.io/latest-Chemic-AI-Version/](https://reukem.github.io/latest-Chemic-AI-Version/)
+
+#### Option 2: Container Cloud Hosting (Google Cloud Run / AWS / Docker)
+Build and run the production Nginx Alpine image on Google Cloud Run, Railway, Render, or Docker:
+```bash
+# 1. Build Docker image
+docker build -t chemic-ai-ultimate .
+
+# 2. Run locally on port 8080
+docker run -p 8080:8080 chemic-ai-ultimate
+
+# 3. Deploy directly to Google Cloud Run
+gcloud run deploy chemic-ai-ultimate \
+  --source . \
+  --region asia-southeast1 \
+  --allow-unauthenticated \
+  --port 8080
+```
+
+#### Option 3: Vercel / Netlify 1-Click
+Configured with `vercel.json` and static routing out-of-the-box. Connect your GitHub repository to Vercel or Netlify and it will deploy instantly with zero configuration.
 
 ### ⚡ Standalone 1-Click Offline Laboratory
 Don't want to install Node.js? Download **`Chemic-AI Ultimate.html`** directly from the repository root or Releases page. Double-click to run the entire virtual laboratory, AI mentor, and analytical instruments offline in any modern web browser!
