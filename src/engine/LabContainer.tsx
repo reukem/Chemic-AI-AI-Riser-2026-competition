@@ -1239,7 +1239,7 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 </>
             ) : (
                 <>
-                    <svg className="flask-glass" viewBox="0 0 160 220" style={{ filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }}>
+                    <svg className="flask-glass" viewBox="0 0 160 220" preserveAspectRatio="none" style={{ filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }}>
                         <defs>
                         <linearGradient id="flask-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
@@ -1250,6 +1250,9 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                         <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
                             <rect width="4" height="2" fill="rgba(255,255,255,0.05)" />
                         </pattern>
+                        <clipPath id={`flask-clip-obj-${id}`} clipPathUnits="objectBoundingBox">
+                            <path d="M 0.35 0 L 0.65 0 L 0.65 0.30 L 0.975 0.891 Q 1 0.936 0.9375 0.973 Q 0.875 1 0.8125 1 L 0.1875 1 Q 0.125 1 0.0625 0.973 Q 0 0.936 0.025 0.891 L 0.35 0.30 Z" />
+                        </clipPath>
                         </defs>
                         <path d="M 56 0 L 104 0 L 104 66 L 156 196 Q 160 206 150 214 Q 140 220 130 220 L 30 220 Q 20 220 10 214 Q 0 206 4 196 L 56 66 Z"
                             fill="url(#flask-grad)"
@@ -1299,7 +1302,10 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 </div>
             )}
 
-            <div className={`liquid-clip-wrapper ${isFlask ? 'flask-clip' : 'beaker-clip'}`}>
+            <div 
+                className={`liquid-clip-wrapper ${isFlask ? 'flask-clip' : 'beaker-clip'}`}
+                style={isFlask ? { clipPath: `url(#flask-clip-obj-${id})` } : undefined}
+            >
                 <div
                     ref={liquidBodyRef}
                     className="container-liquid"
@@ -1356,7 +1362,11 @@ const LabContainer: React.FC<LabContainerProps> = ({ id, isDragging, onDragStart
                 </div>
             </div>
 
-            <canvas ref={canvasRef} className={`reaction-canvas ${isFlask ? 'flask-canvas' : ''}`}></canvas>
+            <canvas 
+                ref={canvasRef} 
+                className={`reaction-canvas ${isFlask ? 'flask-canvas' : ''}`}
+                style={isFlask ? { clipPath: `url(#flask-clip-obj-${id})` } : undefined}
+            />
         </div>
     );
 };

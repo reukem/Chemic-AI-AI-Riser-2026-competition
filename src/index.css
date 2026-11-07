@@ -335,7 +335,7 @@ button:active:not(:disabled) {
 }
 
 .flask-clip {
-    clip-path: path("M 57 2 L 103 2 L 103 66 L 154 195 Q 157 203 149 211 Q 140 217 130 217 L 30 217 Q 20 217 11 211 Q 3 203 6 195 L 57 66 Z");
+    clip-path: path("M 75.2 0 L 139.8 0 L 139.8 84 L 209.6 249.5 Q 215 262.2 201.6 272.4 Q 188.1 280 174.7 280 L 40.3 280 Q 26.9 280 13.4 272.4 Q 0 262.2 5.4 249.5 L 75.2 84 Z");
 }
 
 /* LIQUID SYSTEM - AAA VOLUMETRIC GRAPHICS */
@@ -497,7 +497,7 @@ button:active:not(:disabled) {
 }
 .flask-canvas {
     left: 0; width: 100%; bottom: 0; height: 100%;
-    clip-path: path("M 57 2 L 103 2 L 103 66 L 154 195 Q 157 203 149 211 Q 140 217 130 217 L 30 217 Q 20 217 11 211 Q 3 203 6 195 L 57 66 Z");
+    clip-path: path("M 75.2 0 L 139.8 0 L 139.8 84 L 209.6 249.5 Q 215 262.2 201.6 272.4 Q 188.1 280 174.7 280 L 40.3 280 Q 26.9 280 13.4 272.4 Q 0 262.2 5.4 249.5 L 75.2 84 Z");
 }
 
 /* Info Popup */

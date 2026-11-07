@@ -135,8 +135,6 @@ const LabCanvas: React.FC = () => {
                         transformOrigin: 'top center'
                     }}
                 />
-                {/* Horizon glow rim light */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-90 shadow-[0_0_15px_#22d3ee]" />
             </div>
         </div>
     );
