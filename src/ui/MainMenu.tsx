@@ -23,7 +23,327 @@ import { FlameSpectroscopyModal } from './FlameSpectroscopyModal';
 import { GalvanicCellModal } from './GalvanicCellModal';
 import { ReactionKineticsModal } from './ReactionKineticsModal';
 import { VseprOrbitalModal } from './VseprOrbitalModal';
-import { BreakingBadChemistryBackdrop } from './components/BreakingBadChemistryBackdrop';
+
+// Living Ambient Particle Field with Quantum Dust & Radiant Gradient Sparks
+const CanvasParticles: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<any[]>([]);
+  const sparksRef = useRef<any[]>([]);
+  const trailSparksRef = useRef<any[]>([]);
+  const mouseRef = useRef({ x: 0, y: 0, lastX: 0, lastY: 0 });
+
+  // Authentic Chemic-AI Color Cycle Gradient Palette
+  const GRADIENT_PALETTE = [
+    { r: 34, g: 211, b: 238 },   // Ice Cyan (#22d3ee)
+    { r: 56, g: 189, b: 248 },   // Sky Blue (#38bdf8)
+    { r: 168, g: 85, b: 247 },   // Lavender Violet (#a855f7)
+    { r: 236, g: 72, b: 153 },   // Cyber Magenta (#ec4899)
+    { r: 251, g: 191, b: 36 },   // Solar Amber Gold (#fbbf24)
+    { r: 255, g: 255, b: 255 }   // Starlight Diamond White
+  ];
+
+  const getInterpolatedColor = (phase: number) => {
+    const len = GRADIENT_PALETTE.length;
+    const normalized = ((phase % 1) + 1) % 1;
+    const index = Math.floor(normalized * len);
+    const nextIndex = (index + 1) % len;
+    const factor = (normalized * len) - index;
+
+    const c1 = GRADIENT_PALETTE[index];
+    const c2 = GRADIENT_PALETTE[nextIndex];
+
+    return {
+      r: Math.round(c1.r + (c2.r - c1.r) * factor),
+      g: Math.round(c1.g + (c2.g - c1.g) * factor),
+      b: Math.round(c1.b + (c2.b - c1.b) * factor)
+    };
+  };
+
+  const drawStarFlare = (
+    ctx: CanvasRenderingContext2D, 
+    x: number, 
+    y: number, 
+    size: number, 
+    alpha: number, 
+    rgb: { r: number; g: number; b: number }, 
+    rotation: number
+  ) => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+
+    // Hardware-accelerated GPU Radial Gradient Glow (Zero Gaussian Blur Overhead)
+    const auraRadius = size * 3.8;
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, auraRadius);
+    grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.8})`);
+    grad.addColorStop(0.45, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.25})`);
+    grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, auraRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4-Point Diamond Flare
+    ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha * 0.95})`;
+    const arm = size * 2.5;
+    const waist = size * 0.38;
+    ctx.beginPath();
+    ctx.moveTo(0, -arm);
+    ctx.quadraticCurveTo(0, 0, waist, 0);
+    ctx.quadraticCurveTo(0, 0, 0, arm);
+    ctx.quadraticCurveTo(0, 0, -waist, 0);
+    ctx.quadraticCurveTo(0, 0, 0, -arm);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(-arm, 0);
+    ctx.quadraticCurveTo(0, 0, 0, waist);
+    ctx.quadraticCurveTo(0, 0, arm, 0);
+    ctx.quadraticCurveTo(0, 0, 0, -waist);
+    ctx.quadraticCurveTo(0, 0, -arm, 0);
+    ctx.fill();
+
+    // Intense White Micro-Nucleus
+    ctx.beginPath();
+    ctx.arc(0, 0, size * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, alpha * 1.8)})`;
+    ctx.fill();
+
+    ctx.restore();
+  };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let time = 0;
+    let lastTrailTime = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    ctx.scale(dpr, dpr);
+
+    const handleResize = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.scale(dpr, dpr);
+      initField();
+    };
+    window.addEventListener('resize', handleResize);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const curX = e.clientX;
+      const curY = e.clientY;
+      mouseRef.current = {
+        x: (curX / w - 0.5) * 2,
+        y: (curY / h - 0.5) * 2,
+        lastX: curX,
+        lastY: curY
+      };
+
+      // Throttled micro-spark trail behind cursor (capped at 10 max)
+      const now = performance.now();
+      if (now - lastTrailTime > 65 && trailSparksRef.current.length < 10) {
+        lastTrailTime = now;
+        const color = GRADIENT_PALETTE[Math.floor(Math.random() * GRADIENT_PALETTE.length)];
+        trailSparksRef.current.push({
+          x: curX + (Math.random() - 0.5) * 12,
+          y: curY + (Math.random() - 0.5) * 12,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: (Math.random() - 0.5) * 1.2 - 0.3,
+          size: Math.random() * 1.8 + 1.0,
+          life: 1.0,
+          decay: 0.035,
+          rgb: color,
+          rotation: Math.random() * Math.PI
+        });
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
+    const initField = () => {
+      particlesRef.current = [];
+      sparksRef.current = [];
+      trailSparksRef.current = [];
+
+      // 1. Constellation Dust Nodes (Optimized count for 60fps)
+      const numNodes = Math.min(Math.floor((w * h) / 32000), 28);
+      for (let i = 0; i < numNodes; i++) {
+        particlesRef.current.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2 - 0.06,
+          size: Math.random() * 1.5 + 0.8,
+          alpha: Math.random() * 0.35 + 0.12,
+          color: Math.random() > 0.35 ? '34, 211, 238' : '168, 85, 247'
+        });
+      }
+
+      // 2. Radiant Gradient Sparks & Twinkling Star Flares
+      const numSparks = Math.min(Math.floor((w * h) / 36000), 20);
+      for (let i = 0; i < numSparks; i++) {
+        sparksRef.current.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: -(0.2 + Math.random() * 0.45),
+          swaySpeed: 0.015 + Math.random() * 0.02,
+          swayPhase: Math.random() * Math.PI * 2,
+          size: Math.random() * 2.0 + 1.2,
+          baseAlpha: Math.random() * 0.35 + 0.35,
+          twinkleSpeed: 0.03 + Math.random() * 0.04,
+          twinklePhase: Math.random() * Math.PI * 2,
+          colorPhase: Math.random(),
+          colorSpeed: 0.003 + Math.random() * 0.004,
+          rotation: Math.random() * Math.PI,
+          rotSpeed: (Math.random() - 0.5) * 0.025,
+          isStar: Math.random() < 0.65
+        });
+      }
+    };
+
+    initField();
+
+    const draw = () => {
+      // Pause drawing when tab is hidden to save CPU/GPU cycles
+      if (document.hidden) {
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+
+      time += 1;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'screen';
+
+      const mouse = mouseRef.current;
+      const mx = (mouse.x / 2 + 0.5) * w;
+      const my = (mouse.y / 2 + 0.5) * h;
+
+      // 1. Draw Constellation Dust & Connective Quantum Lines (Squared distance calculation)
+      const nodes = particlesRef.current;
+      const nodeLen = nodes.length;
+      for (let i = 0; i < nodeLen; i++) {
+        const p = nodes[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+
+        const dx = mx - p.x;
+        const dy = my - p.y;
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 14400) { // 120px squared
+          const dist = Math.sqrt(distSq);
+          const force = (120 - dist) / 120;
+          p.x -= (dx / dist) * force * 0.8;
+          p.y -= (dy / dist) * force * 0.8;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < nodeLen; j++) {
+          const p2 = nodes[j];
+          const dx2 = p.x - p2.x;
+          const dy2 = p.y - p2.y;
+          const dist2Sq = dx2 * dx2 + dy2 * dy2;
+
+          if (dist2Sq < 7225) { // 85px squared
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(34, 211, 238, ${0.08 * (1 - dist2Sq / 7225)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 2. Draw Radiant Gradient Sparks & Star Flares
+      const sparks = sparksRef.current;
+      const sparkLen = sparks.length;
+      for (let sIdx = 0; sIdx < sparkLen; sIdx++) {
+        const s = sparks[sIdx];
+        s.y += s.vy;
+        s.x += Math.sin(time * s.swaySpeed + s.swayPhase) * 0.35;
+        s.colorPhase += s.colorSpeed;
+        s.rotation += s.rotSpeed;
+
+        if (s.y < -20) {
+          s.y = h + 20;
+          s.x = Math.random() * w;
+        }
+        if (s.x < 0) s.x = w;
+        if (s.x > w) s.x = 0;
+
+        const liveAlpha = Math.max(0.12, Math.min(1.0, s.baseAlpha + Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.4));
+        const rgb = getInterpolatedColor(s.colorPhase);
+
+        if (s.isStar) {
+          drawStarFlare(ctx, s.x, s.y, s.size, liveAlpha, rgb, s.rotation);
+        } else {
+          // Soft Glowing Ember using fast concentric radial gradient
+          const rad = s.size * 3.0;
+          const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad);
+          grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${liveAlpha})`);
+          grad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${liveAlpha * 0.3})`);
+          grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, rad, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size * 0.45, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, liveAlpha * 1.5)})`;
+          ctx.fill();
+        }
+      }
+
+      // 3. Draw Interactive Cursor Trail Sparks
+      const trail = trailSparksRef.current;
+      for (let k = trail.length - 1; k >= 0; k--) {
+        const ts = trail[k];
+        ts.x += ts.vx;
+        ts.y += ts.vy;
+        ts.life -= ts.decay;
+        ts.rotation += 0.035;
+
+        if (ts.life > 0) {
+          drawStarFlare(ctx, ts.x, ts.y, ts.size * ts.life, ts.life * 0.75, ts.rgb, ts.rotation);
+        } else {
+          trail.splice(k, 1);
+        }
+      }
+
+      ctx.globalCompositeOperation = 'source-over';
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />;
+};
 
 type ModeType = 'idle' | 'start' | 'socratic' | 'learning' | 'reagent' | 'organic' | 'calculating' | 'pet_shy1' | 'pet_shy2' | 'pet_punch' | 'pet_pout';
 
@@ -353,8 +673,8 @@ const MainMenu: React.FC = () => {
         />
       </div>
 
-      {/* Breaking Bad Style Atmospheric Chemistry Backdrop */}
-      <BreakingBadChemistryBackdrop />
+      {/* Atmospheric Quantum Particle Field */}
+      <CanvasParticles />
 
       {/* Ambient Volumetric Nebulae */}
       <motion.div 

@@ -115,14 +115,29 @@ const LabCanvas: React.FC = () => {
                 ))}
             </div>
 
-            {/* Holographic AR Grid Lab Desk Tabletop Surface */}
+            {/* Holographic 3D Workbench Floor / Table Stage (Raised 36vh with Illuminated Horizon Rim) */}
             <div 
-                className="absolute bottom-0 left-0 right-0 h-[50vh] desk-surface z-0 pointer-events-none"
+                className="absolute bottom-0 left-0 right-0 h-[36vh] desk-surface z-0 pointer-events-none"
                 style={{ 
-                    maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-                    WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)'
+                    borderTop: '2px solid rgba(34, 211, 238, 0.35)',
+                    boxShadow: '0 -15px 40px rgba(6, 182, 212, 0.15)',
+                    background: 'linear-gradient(to top, rgba(4, 15, 30, 0.95) 0%, rgba(2, 8, 18, 0.98) 70%, rgba(1, 4, 10, 0.99) 100%)',
+                    perspective: '600px',
                 }}
-            />
+            >
+                {/* Subtle perspective AR grid lines */}
+                <div 
+                    className="absolute inset-0 opacity-25"
+                    style={{
+                        backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.25) 1px, transparent 1px)',
+                        backgroundSize: '48px 48px',
+                        transform: 'perspective(500px) rotateX(50deg)',
+                        transformOrigin: 'top center'
+                    }}
+                />
+                {/* Horizon glow rim light */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-90 shadow-[0_0_15px_#22d3ee]" />
+            </div>
         </div>
     );
 };
