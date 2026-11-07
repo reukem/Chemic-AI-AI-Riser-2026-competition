@@ -99,6 +99,14 @@ const LabCanvas: React.FC = () => {
             }}
             onDrop={handleDrop}
         >
+            {/* Vivid Multi-Color Chemical Spectrum Ambient Lighting ("Chemistry is About Colors") */}
+            <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute top-[6%] left-[18%] w-[520px] h-[420px] bg-emerald-500/12 rounded-full blur-[135px]" />
+                <div className="absolute top-[12%] right-[16%] w-[540px] h-[440px] bg-purple-500/12 rounded-full blur-[140px]" />
+                <div className="absolute bottom-[24%] left-[42%] -translate-x-1/2 w-[620px] h-[340px] bg-cyan-500/12 rounded-full blur-[130px]" />
+                <div className="absolute top-[28%] left-[48%] w-[420px] h-[300px] bg-amber-500/8 rounded-full blur-[125px]" />
+            </div>
+
             {/* Holographic Cursor Light Trail (Direct GPU Transform - Zero Re-render) */}
             <div 
                 ref={cursorLightRef}
@@ -107,7 +115,7 @@ const LabCanvas: React.FC = () => {
                     display: 'none',
                     left: 0,
                     top: 0,
-                    background: 'radial-gradient(circle, rgba(34,211,238,0.5) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(52,211,153,0.5) 0%, rgba(34,211,238,0.35) 45%, transparent 70%)',
                 }}
             />
 
@@ -131,21 +139,28 @@ const LabCanvas: React.FC = () => {
                 ))}
             </div>
 
-            {/* Holographic 3D Workbench Floor / Table Stage (28vh with Illuminated Horizon Rim) */}
+            {/* Holographic 3D Workbench Floor / Table Stage (28vh with Prismatic Chemical Horizon Rim) */}
             <div 
                 className="absolute bottom-0 left-0 right-0 h-[28vh] desk-surface z-0 pointer-events-none"
                 style={{ 
-                    borderTop: '2px solid rgba(34, 211, 238, 0.35)',
-                    boxShadow: '0 -15px 40px rgba(6, 182, 212, 0.15)',
-                    background: 'linear-gradient(to top, rgba(4, 15, 30, 0.96) 0%, rgba(3, 10, 22, 0.98) 65%, rgba(2, 6, 14, 0.99) 100%)',
+                    boxShadow: '0 -18px 50px rgba(16, 185, 129, 0.16), 0 -6px 25px rgba(34, 211, 238, 0.22)',
+                    background: 'linear-gradient(to top, rgba(6, 20, 38, 0.96) 0%, rgba(5, 15, 30, 0.97) 60%, rgba(4, 11, 24, 0.98) 100%)',
                     perspective: '600px',
                 }}
             >
-                {/* Subtle perspective AR grid lines */}
-                <div 
-                    className="absolute -inset-x-[15%] top-0 h-[240%] opacity-25"
+                {/* Prismatic Multi-Color Chemical Spectrum Horizon Bar */}
+                <div
+                    className="absolute top-0 left-0 right-0 h-[2.5px]"
                     style={{
-                        backgroundImage: 'linear-gradient(rgba(34, 211, 238, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.25) 1px, transparent 1px)',
+                        background: 'linear-gradient(90deg, rgba(16,185,129,0.75) 0%, rgba(34,211,238,0.9) 35%, rgba(168,85,247,0.8) 70%, rgba(245,158,11,0.75) 100%)',
+                        boxShadow: '0 0 18px rgba(34, 211, 238, 0.55)'
+                    }}
+                />
+                {/* Vivid perspective AR grid lines */}
+                <div 
+                    className="absolute -inset-x-[15%] top-0 h-[240%] opacity-30"
+                    style={{
+                        backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.32) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.32) 1px, transparent 1px)',
                         backgroundSize: '48px 48px',
                         transform: 'perspective(500px) rotateX(55deg)',
                         transformOrigin: 'top center'

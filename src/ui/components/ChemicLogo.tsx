@@ -33,22 +33,22 @@ export const ChemicLogo: React.FC<ChemicLogoProps> = ({
         <defs>
           {/* Gradients */}
           <linearGradient id="chemicCyanSheen" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="35%" stopColor="#67e8f9" />
-            <stop offset="70%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#0891b2" />
+            <stop offset="0%" stopColor="#6ee7b7" />
+            <stop offset="35%" stopColor="#22d3ee" />
+            <stop offset="70%" stopColor="#c084fc" />
+            <stop offset="100%" stopColor="#fbbf24" />
           </linearGradient>
 
-          <linearGradient id="flaskLiquid" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#0891b2" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#0e3b5e" stopOpacity="0.98" />
+          <linearGradient id="flaskLiquid" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#34d399" stopOpacity="0.92" />
+            <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#9333ea" stopOpacity="0.98" />
           </linearGradient>
 
           <linearGradient id="orbitalRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.9" />
+            <stop offset="0%" stopColor="#34d399" stopOpacity="0.85" />
+            <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#f472b6" stopOpacity="0.9" />
           </linearGradient>
 
           <filter id="coreGlow" x="-20%" y="-20%" width="140%" height="140%">
@@ -103,10 +103,10 @@ export const ChemicLogo: React.FC<ChemicLogoProps> = ({
           />
 
           {/* Orbiting Quantum Electron Nodes */}
-          <circle cx="78" cy="34" r="2.2" fill="#e0f2fe" filter="url(#coreGlow)" />
-          <circle cx="22" cy="70" r="2.2" fill="#38bdf8" filter="url(#coreGlow)" />
-          <circle cx="24" cy="36" r="2" fill="#a5f3fc" filter="url(#coreGlow)" />
-          <circle cx="76" cy="68" r="2" fill="#22d3ee" filter="url(#coreGlow)" />
+          <circle cx="78" cy="34" r="2.4" fill="#34d399" filter="url(#coreGlow)" />
+          <circle cx="22" cy="70" r="2.4" fill="#38bdf8" filter="url(#coreGlow)" />
+          <circle cx="24" cy="36" r="2.2" fill="#fbbf24" filter="url(#coreGlow)" />
+          <circle cx="76" cy="68" r="2.2" fill="#f472b6" filter="url(#coreGlow)" />
         </g>
 
         {/* Central Precision Erlenmeyer Flask Silhouette */}
@@ -214,13 +214,13 @@ export const ChemicLogo: React.FC<ChemicLogoProps> = ({
 
         {/* Main Wordmark */}
         <div className="flex items-center gap-2">
-          <span className="text-3xl md:text-4xl lg:text-[42px] font-black tracking-[0.14em] uppercase text-white font-mono leading-none drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
+          <span className="text-3xl md:text-4xl lg:text-[42px] font-black tracking-[0.14em] uppercase chemic-gradient-cycle font-mono leading-none drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]">
             CHEMIC
           </span>
-          <span className="text-cyan-400 font-mono text-2xl font-light opacity-80 leading-none">·</span>
-          <span className="relative px-2.5 py-1 rounded-xl bg-gradient-to-br from-cyan-950/90 to-[#021020]/90 border border-cyan-400/60 text-cyan-300 font-mono font-black text-xl md:text-2xl tracking-widest leading-none shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+          <span className="text-emerald-400 font-mono text-2xl font-light opacity-90 leading-none">·</span>
+          <span className="relative px-2.5 py-1 rounded-xl bg-gradient-to-br from-emerald-950/90 via-cyan-950/90 to-purple-950/90 border border-emerald-400/60 text-emerald-300 font-mono font-black text-xl md:text-2xl tracking-widest leading-none shadow-[0_0_22px_rgba(16,185,129,0.45)]">
             AI
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-cyan-400 rounded-full animate-ping opacity-75" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-75" />
           </span>
         </div>
 

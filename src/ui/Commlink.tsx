@@ -145,35 +145,42 @@ const Commlink: React.FC = () => {
     };
 
     return (
-        <div className="absolute bottom-6 right-6 z-50 w-88 max-w-[90vw] pointer-events-auto bg-gradient-to-b from-[#051122]/95 to-[#030914]/95 backdrop-blur-2xl rounded-3xl border border-cyan-500/40 shadow-[0_0_40px_rgba(34,211,238,0.15)] p-4 flex flex-col overflow-hidden transition-all duration-300">
+        <div className="scifi-hud-card absolute bottom-5 right-5 z-50 w-[390px] sm:w-[425px] max-w-[92vw] pointer-events-auto bg-gradient-to-br from-[#06182c]/96 via-[#040e1e]/96 to-[#0b071e]/98 backdrop-blur-2xl rounded-3xl border-2 border-cyan-400/50 shadow-[0_15px_55px_rgba(0,0,0,0.9),0_0_35px_rgba(16,185,129,0.2)] p-4 flex flex-col overflow-hidden transition-all duration-300">
+            {/* Top Prismatic Chemical Spectrum Ribbon */}
+            <div className="absolute top-0 left-5 right-5 h-[3px] rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 via-purple-400 to-amber-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+            <div className="absolute -top-14 -left-14 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-14 -right-14 w-32 h-32 bg-purple-500/15 rounded-full blur-2xl pointer-events-none" />
+
             {/* Holographic Header */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="relative z-10 flex items-center justify-between gap-3">
                 <div
                     className="flex items-center gap-3 cursor-pointer group flex-grow"
                     onClick={() => { audioManager.playClick(); setIsChatExpanded(!isChatExpanded); }}
                     onMouseEnter={() => audioManager.playHover()}
                 >
                     <div className="relative shrink-0">
-                        <img 
-                            src={lucyFacePFP} 
-                            alt="Lucy Avatar" 
-                            className={`w-11 h-11 rounded-full border border-cyan-400 object-cover shadow-[0_0_12px_rgba(34,211,238,0.4)] transition-transform duration-300 ${
-                                isSpeaking ? 'scale-105 ring-2 ring-cyan-400' : ''
-                            }`}
-                        />
-                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#030914] rounded-full animate-pulse" />
+                        <div className={`p-0.5 rounded-full bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-500 shadow-[0_0_15px_rgba(52,211,153,0.45)] transition-transform duration-300 ${
+                            isSpeaking ? 'scale-105 ring-2 ring-emerald-300' : 'group-hover:scale-105'
+                        }`}>
+                            <img 
+                                src={lucyFacePFP} 
+                                alt="Lucy Avatar" 
+                                className="w-11 h-11 rounded-full border border-slate-950 object-cover"
+                            />
+                        </div>
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#030914] rounded-full animate-pulse shadow-[0_0_8px_#34d399]" />
                     </div>
 
                     <div className="flex flex-col">
-                        <h2 className="text-sm font-black text-white tracking-wide font-sans group-hover:text-cyan-200 transition-colors flex items-center gap-2">
+                        <h2 className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-emerald-200 tracking-wide font-sans flex items-center gap-2">
                             <span>{t('profLucyTitle', rawLanguage)}</span>
-                            <span className="text-[9px] font-mono font-bold text-cyan-400/80 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-800/60">
+                            <span className="text-[9px] font-mono font-bold text-emerald-300 bg-emerald-950/75 px-1.5 py-0.5 rounded-md border border-emerald-400/50 shadow-[0_0_8px_rgba(16,185,129,0.25)]">
                                 {t('aiAssistantBadge', rawLanguage)}
                             </span>
                         </h2>
-                        <div className="flex items-center gap-1.5 mt-0.5">
+                        <div className="flex items-center gap-2 mt-0.5">
                             {isSpeaking ? (
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1.5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                                     <span className="text-[10px] font-mono font-bold text-cyan-300 tracking-wider uppercase animate-pulse">
                                         {t('statusSpeaking', rawLanguage)}
@@ -182,11 +189,18 @@ const Commlink: React.FC = () => {
                             ) : (
                                 <div className="flex items-center gap-1.5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
-                                    <span className="text-[10px] font-mono font-bold text-emerald-400 tracking-wider uppercase">
+                                    <span className="text-[10px] font-mono font-bold text-emerald-300/90 tracking-wider uppercase">
                                         {t('statusOnlineOffline', rawLanguage)}
                                     </span>
                                 </div>
                             )}
+                            {/* Mini Multi-Color Equalizer Bars */}
+                            <div className="flex items-center gap-0.5 ml-1">
+                                <span className="w-0.5 h-2.5 bg-emerald-400 rounded-full animate-[pulse_0.6s_ease-in-out_infinite]" />
+                                <span className="w-0.5 h-3.5 bg-cyan-400 rounded-full animate-[pulse_0.4s_ease-in-out_infinite_0.1s]" />
+                                <span className="w-0.5 h-2 bg-purple-400 rounded-full animate-[pulse_0.7s_ease-in-out_infinite_0.2s]" />
+                                <span className="w-0.5 h-3 bg-amber-400 rounded-full animate-[pulse_0.5s_ease-in-out_infinite_0.3s]" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -202,9 +216,9 @@ const Commlink: React.FC = () => {
                             }
                             setIsVoiceActive(!isVoiceActive);
                         }}
-                        className={`px-2 py-1 rounded-xl font-mono text-[10px] font-bold border transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
+                        className={`px-2.5 py-1.5 rounded-xl font-mono text-[10px] font-bold border transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
                             isVoiceActive 
-                                ? 'bg-cyan-950/80 border-cyan-400 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]' 
+                                ? 'bg-gradient-to-r from-emerald-950/90 to-cyan-950/90 border-emerald-400/60 text-emerald-200 shadow-[0_0_12px_rgba(16,185,129,0.3)]' 
                                 : 'bg-[#030914] border-slate-800 text-slate-500 hover:text-slate-300'
                         }`}
                         title={language === 'vi' ? 'Bật/Tắt Giọng nói của Lucy' : 'Toggle Lucy TTS Voice'}
@@ -215,7 +229,7 @@ const Commlink: React.FC = () => {
 
                     <button 
                         onClick={() => { audioManager.playClick(); setIsChatExpanded(!isChatExpanded); }}
-                        className="text-cyan-400 text-xs font-mono p-1 hover:scale-125 transition-transform duration-300 cursor-pointer"
+                        className="w-7 h-7 rounded-xl bg-cyan-950/60 border border-cyan-500/35 hover:border-cyan-300 text-cyan-300 text-xs font-mono flex items-center justify-center hover:scale-110 transition-all duration-300 cursor-pointer"
                     >
                         <span className={`inline-block transition-transform duration-300 ${isChatExpanded ? 'rotate-0' : 'rotate-180'}`}>
                             ▼
@@ -225,46 +239,53 @@ const Commlink: React.FC = () => {
             </div>
 
             {/* Expandable Chat Console */}
-            <div className={`transition-all duration-300 ease-in-out overflow-hidden flex flex-col ${isChatExpanded ? 'max-h-[500px] opacity-100 mt-3 gap-3' : 'max-h-0 opacity-0 mt-0 gap-0'}`}>
+            <div className={`relative z-10 transition-all duration-300 ease-in-out overflow-hidden flex flex-col ${isChatExpanded ? 'max-h-[540px] opacity-100 mt-3.5 gap-3' : 'max-h-0 opacity-0 mt-0 gap-0'}`}>
                 
-                {/* Quick Action Suggestion Chips */}
+                {/* Vivid Color-Coded Quick Action Suggestion Chips */}
                 <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1 pt-0.5">
                     <button
                         onClick={() => handleAnalyze("What is in my containers right now? Give me a status report.")}
                         disabled={isThinking}
-                        className="px-2.5 py-1 bg-[#07172c] hover:bg-cyan-950/80 border border-cyan-800/60 hover:border-cyan-400 text-[10px] font-mono text-cyan-300 rounded-lg whitespace-nowrap transition-all shadow-sm active:scale-95 cursor-pointer"
+                        className="px-2.5 py-1 bg-cyan-950/60 hover:bg-cyan-900/80 border border-cyan-500/45 hover:border-cyan-300 text-[10px] font-mono font-bold text-cyan-200 rounded-xl whitespace-nowrap transition-all shadow-[0_0_10px_rgba(6,182,212,0.15)] active:scale-95 cursor-pointer"
                     >
                         🔍 {t('btnStatusReport', rawLanguage)}
                     </button>
                     <button
+                        onClick={() => handleAnalyze(language === 'vi' ? "Giải thích màu sắc của các dung dịch, chất chỉ thị và kết tủa trong bình hiện tại!" : "Explain the vivid colors of the solutions, indicators, and precipitates in my containers!")}
+                        disabled={isThinking}
+                        className="px-2.5 py-1 bg-pink-950/60 hover:bg-pink-900/80 border border-pink-500/45 hover:border-pink-300 text-[10px] font-mono font-bold text-pink-200 rounded-xl whitespace-nowrap transition-all shadow-[0_0_10px_rgba(236,72,153,0.15)] active:scale-95 cursor-pointer"
+                    >
+                        🎨 {language === 'vi' ? 'Giải Thích Màu' : 'Color Guide'}
+                    </button>
+                    <button
                         onClick={() => handleAnalyze("Are any of the chemicals currently mixed dangerous or reacting?")}
                         disabled={isThinking}
-                        className="px-2.5 py-1 bg-[#07172c] hover:bg-cyan-950/80 border border-cyan-800/60 hover:border-cyan-400 text-[10px] font-mono text-cyan-300 rounded-lg whitespace-nowrap transition-all shadow-sm active:scale-95 cursor-pointer"
+                        className="px-2.5 py-1 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-500/45 hover:border-amber-300 text-[10px] font-mono font-bold text-amber-200 rounded-xl whitespace-nowrap transition-all shadow-[0_0_10px_rgba(245,158,11,0.15)] active:scale-95 cursor-pointer"
                     >
                         ⚡ {t('btnSafetyCheck', rawLanguage)}
                     </button>
                     <button
                         onClick={() => handleAnalyze("Give me an educational chemistry challenge or pop quiz to test my knowledge!")}
                         disabled={isThinking}
-                        className="px-2.5 py-1 bg-[#07172c] hover:bg-cyan-950/80 border border-cyan-800/60 hover:border-cyan-400 text-[10px] font-mono text-cyan-300 rounded-lg whitespace-nowrap transition-all shadow-sm active:scale-95 cursor-pointer"
+                        className="px-2.5 py-1 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/45 hover:border-emerald-300 text-[10px] font-mono font-bold text-emerald-200 rounded-xl whitespace-nowrap transition-all shadow-[0_0_10px_rgba(16,185,129,0.15)] active:scale-95 cursor-pointer"
                     >
                         🎯 {t('btnPopQuiz', rawLanguage)}
                     </button>
                 </div>
 
                 {/* Chat Body */}
-                <div className="h-[260px] overflow-y-auto flex flex-col gap-2.5 p-3 pt-4 pb-4 custom-scrollbar bg-[#020712]/70 rounded-2xl border border-cyan-950 shadow-inner font-sans text-xs relative select-text scroll-smooth">
+                <div className="h-[275px] overflow-y-auto flex flex-col gap-2.5 p-3 pt-3.5 pb-3.5 custom-scrollbar bg-[#020814]/80 rounded-2xl border border-cyan-500/25 shadow-inner font-sans text-xs relative select-text scroll-smooth">
                     <div className="relative z-10 flex flex-col gap-2.5 select-text">
                         {chatHistory.map((msg, i) => (
                             <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} select-text`}>
-                                <div className={`px-3 py-2 rounded-xl max-w-[90%] whitespace-pre-wrap leading-relaxed shadow-sm select-text cursor-text selection:bg-cyan-500/40 selection:text-white ${
+                                <div className={`px-3.5 py-2.5 rounded-2xl max-w-[92%] whitespace-pre-wrap leading-relaxed shadow-md select-text cursor-text selection:bg-emerald-500/40 selection:text-white ${
                                     msg.sender === 'user' 
-                                        ? 'bg-cyan-900/30 text-cyan-100 border border-cyan-500/40' 
-                                        : 'bg-[#081528]/85 text-slate-200 border border-slate-800'
+                                        ? 'bg-gradient-to-r from-cyan-950/85 via-indigo-950/85 to-purple-950/85 text-cyan-100 border border-cyan-400/45' 
+                                        : 'bg-gradient-to-br from-[#07192e]/95 via-[#051224]/95 to-[#0b0d24]/95 text-slate-100 border border-emerald-500/30 border-l-4 border-l-emerald-400'
                                 }`}>
-                                    <div className="flex items-center justify-between gap-3 mb-1 select-none">
-                                        <span className={`block text-[8px] font-mono font-bold uppercase tracking-wider ${
-                                            msg.sender === 'user' ? 'text-cyan-400' : 'text-emerald-400'
+                                    <div className="flex items-center justify-between gap-3 mb-1.5 pb-1 border-b border-white/10 select-none">
+                                        <span className={`block text-[8.5px] font-mono font-bold uppercase tracking-wider ${
+                                            msg.sender === 'user' ? 'text-cyan-300' : 'text-emerald-300'
                                         }`}>
                                             {msg.sender === 'user' ? `> ${t('researcherLabel', rawLanguage)}` : `✦ ${t('profLucyTitle', rawLanguage)}`}
                                         </span>
@@ -272,7 +293,7 @@ const Commlink: React.FC = () => {
                                             {msg.sender === 'ai' && (
                                                 <button
                                                     onClick={() => handlePlayVoice(msg.text)}
-                                                    className="text-[9px] font-mono text-cyan-400 hover:text-cyan-200 opacity-75 hover:opacity-100 transition-all flex items-center gap-1 cursor-pointer"
+                                                    className="text-[9px] font-mono text-emerald-300 hover:text-white bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30 transition-all flex items-center gap-1 cursor-pointer"
                                                     title={language === 'vi' ? 'Nghe Giáo sư Lucy đọc' : 'Listen to Prof. Lucy'}
                                                 >
                                                     <span>{isSpeaking ? '⏹' : '🔊'}</span>
@@ -281,7 +302,7 @@ const Commlink: React.FC = () => {
                                             )}
                                             <button
                                                 onClick={() => handleCopy(msg.text, i)}
-                                                className="text-[9px] font-mono text-slate-400 hover:text-cyan-300 opacity-60 hover:opacity-100 transition-all flex items-center gap-1 cursor-pointer"
+                                                className="text-[9px] font-mono text-slate-300 hover:text-cyan-200 opacity-75 hover:opacity-100 transition-all flex items-center gap-1 cursor-pointer"
                                                 title={language === 'vi' ? 'Sao chép vào khay nhớ tạm' : 'Copy to clipboard'}
                                             >
                                                 {copiedIdx === i ? (
@@ -292,7 +313,7 @@ const Commlink: React.FC = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="select-text cursor-text selection:bg-cyan-500/40 selection:text-white">
+                                    <div className="select-text cursor-text selection:bg-emerald-500/40 selection:text-white text-[12.5px]">
                                         {msg.text}
                                     </div>
                                 </div>
@@ -301,12 +322,12 @@ const Commlink: React.FC = () => {
 
                         {isThinking && (
                             <div className="flex items-start">
-                                <div className="px-3 py-2 rounded-xl bg-[#081528]/80 text-cyan-400 font-mono text-[10px] uppercase tracking-wider border border-cyan-800/50 flex items-center gap-2">
+                                <div className="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-emerald-950/70 to-cyan-950/70 text-emerald-300 font-mono text-[10px] uppercase tracking-wider border border-emerald-400/45 flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                                     <span>{t('lucyAnalyzing', rawLanguage)}</span>
                                     <span className="flex gap-1">
-                                        <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                                         <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                        <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                     </span>
                                 </div>
                             </div>
@@ -320,14 +341,14 @@ const Commlink: React.FC = () => {
                     <input
                         type="text"
                         placeholder={t('chatPlaceholder', rawLanguage)}
-                        className="text-cyan-200 font-sans text-xs bg-[#020712] h-10 px-3.5 rounded-xl border border-cyan-900/60 flex-grow focus:outline-none focus:border-cyan-400 transition-colors placeholder:text-slate-600 shadow-inner"
+                        className="text-cyan-100 font-sans text-xs bg-[#020814] h-10 px-3.5 rounded-xl border border-cyan-500/40 flex-grow focus:outline-none focus:border-emerald-400 transition-colors placeholder:text-slate-500 shadow-inner"
                         value={userInput}
                         onChange={(e) => setUserInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         disabled={isThinking}
                     />
                     <button
-                        className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl text-white font-bold transition-all flex items-center justify-center h-10 w-10 shrink-0 shadow-[0_0_15px_rgba(34,211,238,0.3)] active:scale-95"
+                        className="bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-600 hover:from-emerald-400 hover:via-cyan-400 hover:to-purple-500 rounded-xl text-white font-bold transition-all flex items-center justify-center h-10 w-11 shrink-0 shadow-[0_0_18px_rgba(16,185,129,0.4)] active:scale-95 cursor-pointer"
                         onClick={() => {
                             if(userInput.trim()) {
                                 handleAnalyze(userInput);
@@ -335,7 +356,7 @@ const Commlink: React.FC = () => {
                             }
                         }}
                     >
-                        <span className="text-xs font-mono font-bold">➔</span>
+                        <span className="text-sm font-mono font-black">➔</span>
                     </button>
                 </div>
             </div>

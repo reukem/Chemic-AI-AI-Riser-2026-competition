@@ -473,23 +473,35 @@ const UIOverlay: React.FC = () => {
                                 )}
                             </div>
 
-                            {/* Category Filter Pills (Horizontal Scroll) */}
+                            {/* Category Filter Pills (Colorful Chemical Spectrum) */}
                             <div className="flex gap-1 overflow-x-auto custom-scrollbar pb-1.5 mb-2 shrink-0 pointer-events-auto">
-                                {categories.map(cat => (
-                                    <button
-                                        key={cat.id}
-                                        type="button"
-                                        onClick={() => { audioManager.playClick(); setSelectedCategory(cat.id); }}
-                                        className={`shrink-0 px-2 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                                            selectedCategory === cat.id
-                                                ? 'bg-cyan-500/30 border border-cyan-400 text-cyan-200 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                                                : 'bg-[#061426]/70 border border-cyan-950/70 text-slate-400 hover:text-cyan-300 hover:bg-[#091e38]'
-                                        }`}
-                                    >
-                                        <span>{cat.icon}</span>
-                                        <span>{cat.label}</span>
-                                    </button>
-                                ))}
+                                {categories.map(cat => {
+                                    const catColorMap: Record<string, string> = {
+                                        all: 'border-emerald-400/60 text-emerald-200 bg-emerald-950/60',
+                                        element: 'border-amber-400/60 text-amber-200 bg-amber-950/60',
+                                        acid: 'border-rose-400/60 text-rose-200 bg-rose-950/60',
+                                        base: 'border-purple-400/60 text-purple-200 bg-purple-950/60',
+                                        salt: 'border-cyan-400/60 text-cyan-200 bg-cyan-950/60',
+                                        organic: 'border-teal-400/60 text-teal-200 bg-teal-950/60',
+                                        indicator: 'border-pink-400/60 text-pink-200 bg-pink-950/60'
+                                    };
+                                    const activeClass = catColorMap[cat.id] || 'border-cyan-400 text-cyan-200 bg-cyan-500/30';
+                                    return (
+                                        <button
+                                            key={cat.id}
+                                            type="button"
+                                            onClick={() => { audioManager.playClick(); setSelectedCategory(cat.id); }}
+                                            className={`shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer flex items-center gap-1 border ${
+                                                selectedCategory === cat.id
+                                                    ? `${activeClass} shadow-[0_0_12px_rgba(34,211,238,0.28)] scale-[1.03]`
+                                                    : 'bg-[#061426]/70 border-cyan-950/70 text-slate-300 hover:text-white hover:bg-[#091e38]'
+                                            }`}
+                                        >
+                                            <span>{cat.icon}</span>
+                                            <span>{cat.label}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
 
                             {/* Dose Volume Selector & Quick Pour Guide */}
@@ -506,7 +518,7 @@ const UIOverlay: React.FC = () => {
                                             }}
                                             className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold transition-all cursor-pointer ${
                                                 dispenseVolume === vol 
-                                                    ? 'bg-cyan-500/40 text-cyan-200 border border-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.4)]' 
+                                                    ? 'bg-emerald-500/35 text-emerald-200 border border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]' 
                                                     : 'bg-[#030914] text-slate-400 border border-cyan-950 hover:text-cyan-300'
                                             }`}
                                             title={vol === 0.05 ? (isVi ? 'Giọt chuẩn độ Burette (0.05 mL)' : 'Burette Titration Micro-drop (0.05 mL)') : `${vol} mL`}
@@ -515,7 +527,7 @@ const UIOverlay: React.FC = () => {
                                         </button>
                                     ))}
                                 </div>
-                                <span className="text-[9px] font-mono text-cyan-400/90 italic truncate" title={isVi ? "Kéo vào bình, bấm 💧 để nhỏ giọt hoặc bấm + để rót" : "Drag or click 💧/+"}>
+                                <span className="text-[9px] font-mono text-emerald-300/90 italic truncate" title={isVi ? "Kéo vào bình, bấm 💧 để nhỏ giọt hoặc bấm + để rót" : "Drag or click 💧/+"}>
                                     {isVi ? '💡 Kéo hoặc bấm 💧/+' : '💡 Drag or click 💧/+'}
                                 </span>
                             </div>
@@ -530,6 +542,11 @@ const UIOverlay: React.FC = () => {
 
                                 {filteredReagents.map(chem => {
                                     const name = (chem.name as any)[language] || chem.name.EN;
+                                    const phBadgeClass = chem.ph < 6.0
+                                        ? 'bg-rose-950/80 border-rose-500/50 text-rose-300'
+                                        : chem.ph > 8.0
+                                        ? 'bg-purple-950/80 border-purple-500/50 text-purple-300'
+                                        : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300';
                                     return (
                                         <div
                                             key={chem.id}
@@ -542,6 +559,7 @@ const UIOverlay: React.FC = () => {
                                             }}
                                             onMouseLeave={() => setHoveredChemId(null)}
                                             className="relative flex items-center justify-between bg-gradient-to-r from-[#071527]/90 to-[#040e1c]/90 border border-cyan-950/80 hover:border-cyan-400/80 hover:from-[#0b213f] hover:to-[#07182f] transition-all rounded-xl p-2 cursor-grab active:cursor-grabbing shadow-sm group"
+                                            style={{ borderLeftWidth: '3px', borderLeftColor: chem.color && chem.color !== '#ffffff' ? chem.color : '#22d3ee' }}
                                         >
                                             <div className="flex items-center gap-2.5 min-w-0 pr-2">
                                                 {/* Color Swatch Orb / State Badge */}
@@ -552,15 +570,15 @@ const UIOverlay: React.FC = () => {
                                                         <span className="text-xs drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]">💨</span>
                                                     ) : (
                                                         <div
-                                                            className="w-3.5 h-3.5 rounded-full shadow-sm"
-                                                            style={{ backgroundColor: chem.color, boxShadow: `0 0 8px ${chem.color}80` }}
+                                                            className="w-3.5 h-3.5 rounded-full shadow-sm border border-white/20"
+                                                            style={{ backgroundColor: chem.color, boxShadow: `0 0 10px ${chem.color}` }}
                                                         />
                                                     )}
                                                 </div>
 
                                                 <div className="flex flex-col min-w-0">
                                                     <div className="flex items-center gap-1.5">
-                                                        <span className="text-xs font-bold text-slate-200 truncate group-hover:text-white transition-colors">
+                                                        <span className="text-xs font-bold text-slate-100 truncate group-hover:text-white transition-colors">
                                                             {name}
                                                         </span>
                                                         {chem.hazardTypes?.includes('flammable') && <span className="text-[10px]" title="Flammable">🔥</span>}
@@ -568,15 +586,15 @@ const UIOverlay: React.FC = () => {
                                                         {chem.hazardTypes?.includes('toxic') && <span className="text-[10px]" title="Toxic">⚡</span>}
                                                         {chem.hazardTypes?.includes('explosive') && <span className="text-[10px]" title="Explosive">💥</span>}
                                                     </div>
-                                                    <span className="text-cyan-400/90 font-mono text-[10px] font-bold">
+                                                    <span className="text-cyan-300 font-mono text-[10px] font-bold">
                                                         {chem.formula}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            {/* pH Badge, Dropper (💧) & Quick Pour (+) Buttons */}
+                                            {/* Universal Indicator Colored pH Badge, Dropper (💧) & Quick Pour (+) Buttons */}
                                             <div className="flex items-center gap-1 shrink-0">
-                                                <span className="px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-900/70 text-[9px] font-mono text-cyan-300 font-bold">
+                                                <span className={`px-1.5 py-0.5 rounded border text-[9px] font-mono font-bold ${phBadgeClass}`}>
                                                     pH {chem.ph.toFixed(1)}
                                                 </span>
                                                 <button

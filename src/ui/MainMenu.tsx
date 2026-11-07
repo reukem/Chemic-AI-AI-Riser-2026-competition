@@ -24,23 +24,59 @@ import { GalvanicCellModal } from './GalvanicCellModal';
 import { ReactionKineticsModal } from './ReactionKineticsModal';
 import { VseprOrbitalModal } from './VseprOrbitalModal';
 import ChemicLogo from './components/ChemicLogo';
+import { lucyVoiceEngine } from '../engine/LucyVoiceEngine';
 
-// Living Ambient Particle Field with Quantum Dust & Radiant Gradient Sparks
+// Breaking Bad-Inspired 3D Chemical Formula & Volumetric Smoke Engine + Quantum Sparks
 const CanvasParticles: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<any[]>([]);
   const sparksRef = useRef<any[]>([]);
   const trailSparksRef = useRef<any[]>([]);
+  const smokeRef = useRef<any[]>([]);
+  const chemFlowRef = useRef<any[]>([]);
   const mouseRef = useRef({ x: 0, y: 0, lastX: 0, lastY: 0 });
 
-  // Authentic Chemic-AI Refined Quantum Palette (Calm Dark Neon Cyan)
+  // Vivid Multi-Color Chemical Spectrum ("Chemistry is About Colors")
   const GRADIENT_PALETTE = [
-    { r: 34, g: 211, b: 238 },   // Ice Cyan (#22d3ee)
-    { r: 56, g: 189, b: 248 },   // Sky Blue (#38bdf8)
-    { r: 6, g: 182, b: 212 },    // Quantum Cyan (#06b6d4)
-    { r: 59, g: 130, b: 246 },   // Deep Cobalt Blue (#3b82f6)
-    { r: 16, g: 185, b: 129 },   // Catalyst Emerald (#10b981)
-    { r: 255, g: 255, b: 255 }   // Starlight Diamond White
+    { r: 16, g: 185, b: 129 },   // Viridian / Malachite Emerald (#10b981)
+    { r: 132, g: 204, b: 22 },   // Chlorine / Uranium Glass Lime (#84cc16)
+    { r: 245, g: 158, b: 11 },   // Dichromate / Bromine Amber (#f59e0b)
+    { r: 34, g: 211, b: 238 },   // Copper(II) Sulfate Cyan (#22d3ee)
+    { r: 168, g: 85, b: 247 },   // Permanganate Royal Violet (#a855f7)
+    { r: 244, g: 63, b: 94 },    // Strontium / Thiocyanate Crimson (#f43f5e)
+    { r: 250, g: 204, b: 21 }    // Lead Iodide Golden Rain (#facc15)
+  ];
+
+  // Periodic Element Tiles for 3D Z-Space Flow (Breaking Bad Intro Style without logo)
+  const ELEMENT_TILES = [
+    { sym: 'Br', num: '35', mass: '79.904', ox: '-1 +1 +5', shells: '2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
+    { sym: 'Ba', num: '56', mass: '137.33', ox: '+2', shells: '2-8-18-18-8-2', rgb: { r: 132, g: 204, b: 22 } },
+    { sym: 'Cu', num: '29', mass: '63.546', ox: '+1 +2', shells: '2-8-18-1', rgb: { r: 34, g: 211, b: 238 } },
+    { sym: 'Cr', num: '24', mass: '51.996', ox: '+2 +3 +6', shells: '2-8-13-1', rgb: { r: 245, g: 158, b: 11 } },
+    { sym: 'Mn', num: '25', mass: '54.938', ox: '+2 +4 +7', shells: '2-8-13-2', rgb: { r: 168, g: 85, b: 247 } },
+    { sym: 'Fe', num: '26', mass: '55.845', ox: '+2 +3', shells: '2-8-14-2', rgb: { r: 244, g: 63, b: 94 } },
+    { sym: 'Au', num: '79', mass: '196.97', ox: '+1 +3', shells: '2-8-18-32-18-1', rgb: { r: 250, g: 204, b: 21 } },
+    { sym: 'Ag', num: '47', mass: '107.87', ox: '+1', shells: '2-8-18-18-1', rgb: { r: 56, g: 189, b: 248 } },
+    { sym: 'Co', num: '27', mass: '58.933', ox: '+2 +3', shells: '2-8-15-2', rgb: { r: 236, g: 72, b: 153 } },
+    { sym: 'Pt', num: '78', mass: '195.08', ox: '+2 +4', shells: '2-8-18-32-17-1', rgb: { r: 45, g: 212, b: 191 } }
+  ];
+
+  // Chemical Formulas & Molecular Masses Flowing in 3D Z-Space
+  const CHEMICAL_FORMULAS = [
+    { text: 'C₁₀H₁₅N', sub: '149.24 g/mol • CHIRAL SYNTHESIS', rgb: { r: 52, g: 211, b: 153 } },
+    { text: 'CuSO₄·5H₂O', sub: '249.68 • [Cu(H₂O)₄]²⁺ AZURE', rgb: { r: 34, g: 211, b: 238 } },
+    { text: 'KMnO₄', sub: '158.034 • +7 PERMANGANATE VIOLET', rgb: { r: 192, g: 132, b: 252 } },
+    { text: 'K₂Cr₂O₇', sub: '294.185 • DICHROMATE AMBER', rgb: { r: 251, g: 191, b: 36 } },
+    { text: '[Fe(SCN)]²⁺', sub: 'BLOOD-RED COMPLEX • λ = 480nm', rgb: { r: 251, g: 113, b: 133 } },
+    { text: 'H₂SO₄', sub: '98.079 • ΔH° = -880 kJ/mol', rgb: { r: 163, g: 230, b: 53 } },
+    { text: 'Pb(NO₃)₂ + 2KI → PbI₂↓', sub: '461.01 • GOLDEN RAIN CRYSTALS', rgb: { r: 250, g: 204, b: 21 } },
+    { text: 'C₆H₁₂O₆', sub: '180.156 • HEXOSE RING', rgb: { r: 52, g: 211, b: 153 } },
+    { text: 'ΔG° = ΔH° - TΔS°', sub: 'GIBBS THERMODYNAMIC EQUILIBRIUM', rgb: { r: 56, g: 189, b: 248 } },
+    { text: 'k = A·e^(-Ea/RT)', sub: 'ARRHENIUS KINETICS CONSTANT', rgb: { r: 245, g: 158, b: 11 } },
+    { text: '1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰', sub: 'QUANTUM ELECTRON SHELLS • 2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
+    { text: '[Cu(NH₃)₄]²⁺', sub: 'TETRAAMMINE DEEP ROYAL SAPPHIRE', rgb: { r: 129, g: 140, b: 248 } },
+    { text: 'AgNO₃ + NaCl → AgCl↓', sub: '143.32 • Ksp = 1.77×10⁻¹⁰', rgb: { r: 45, g: 212, b: 191 } },
+    { text: 'CH₃COOH ⇌ CH₃COO⁻ + H⁺', sub: 'pKa = 4.76 • BUFFER SYSTEM', rgb: { r: 244, g: 114, b: 182 } }
   ];
 
   const getInterpolatedColor = (phase: number) => {
@@ -173,23 +209,81 @@ const CanvasParticles: React.FC = () => {
       particlesRef.current = [];
       sparksRef.current = [];
       trailSparksRef.current = [];
+      smokeRef.current = [];
+      chemFlowRef.current = [];
 
-      // 1. Constellation Dust Nodes (Optimized count for 60fps)
+      // 0A. Volumetric Chemical Smoke Plumes (Breaking Bad Atmospheric Fumes)
+      const smokePalette = [
+        { r: 16, g: 185, b: 129 },   // Viridian Emerald Smoke
+        { r: 132, g: 204, b: 22 },   // Chlorine / Lime Fume
+        { r: 245, g: 158, b: 11 },   // Dichromate / Bromine Amber Vapor
+        { r: 168, g: 85, b: 247 },   // Permanganate / Iodine Violet Mist
+        { r: 6, g: 182, b: 212 },    // Copper Sulfate Cyan Haze
+        { r: 244, g: 63, b: 94 }     // Strontium Rose Mist
+      ];
+      for (let i = 0; i < 18; i++) {
+        const sColor = smokePalette[i % smokePalette.length];
+        smokeRef.current.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.38,
+          vy: -0.15 - Math.random() * 0.28,
+          radius: 150 + Math.random() * 190,
+          alpha: 0.045 + Math.random() * 0.055,
+          pulseSpeed: 0.008 + Math.random() * 0.012,
+          pulsePhase: Math.random() * Math.PI * 2,
+          rgb: sColor
+        });
+      }
+
+      // 0B. 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
+      const total3DItems = 26;
+      for (let i = 0; i < total3DItems; i++) {
+        const kindRoll = i % 5;
+        const kind = kindRoll === 0 ? 'tile' : kindRoll === 4 ? 'ring' : 'formula';
+        const tileData = ELEMENT_TILES[i % ELEMENT_TILES.length];
+        const formulaData = CHEMICAL_FORMULAS[i % CHEMICAL_FORMULAS.length];
+        const rgb = kind === 'tile' ? tileData.rgb : formulaData.rgb;
+        // Alternate directions: some flow into the deep background (+vz), some emerge toward viewer (-vz)
+        const intoBack = i % 3 !== 0;
+        chemFlowRef.current.push({
+          // Spread across screen in normalized coordinates (-0.65 to +0.65 from center)
+          nx: (Math.random() - 0.5) * 1.35,
+          ny: (Math.random() - 0.5) * 1.25,
+          z: 0.22 + (i / total3DItems) * 1.45,
+          vz: intoBack ? (0.0022 + Math.random() * 0.0018) : -(0.0020 + Math.random() * 0.0016),
+          kind,
+          tile: tileData,
+          formula: formulaData,
+          rgb,
+          rot: (Math.random() - 0.5) * 0.35,
+          rotSpeed: (Math.random() - 0.5) * 0.002
+        });
+      }
+
+      // 1. Multi-Color Constellation Dust Nodes
+      const dustColors = [
+        '52, 211, 153',  // Emerald
+        '34, 211, 238',  // Cyan
+        '251, 191, 36',  // Amber
+        '192, 132, 252', // Violet
+        '251, 113, 133'  // Rose
+      ];
       const numNodes = Math.min(Math.floor((w * h) / 32000), 28);
       for (let i = 0; i < numNodes; i++) {
         particlesRef.current.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.2,
-          vy: (Math.random() - 0.5) * 0.2 - 0.06,
-          size: Math.random() * 1.5 + 0.8,
-          alpha: Math.random() * 0.35 + 0.12,
-          color: Math.random() > 0.35 ? '34, 211, 238' : '168, 85, 247'
+          vx: (Math.random() - 0.5) * 0.22,
+          vy: (Math.random() - 0.5) * 0.22 - 0.06,
+          size: Math.random() * 1.6 + 0.9,
+          alpha: Math.random() * 0.4 + 0.15,
+          color: dustColors[i % dustColors.length]
         });
       }
 
       // 2. Radiant Gradient Sparks & Twinkling Star Flares
-      const numSparks = Math.min(Math.floor((w * h) / 36000), 20);
+      const numSparks = Math.min(Math.floor((w * h) / 36000), 22);
       for (let i = 0; i < numSparks; i++) {
         sparksRef.current.push({
           x: Math.random() * w,
@@ -198,8 +292,8 @@ const CanvasParticles: React.FC = () => {
           vy: -(0.2 + Math.random() * 0.45),
           swaySpeed: 0.015 + Math.random() * 0.02,
           swayPhase: Math.random() * Math.PI * 2,
-          size: Math.random() * 2.0 + 1.2,
-          baseAlpha: Math.random() * 0.35 + 0.35,
+          size: Math.random() * 2.1 + 1.2,
+          baseAlpha: Math.random() * 0.38 + 0.38,
           twinkleSpeed: 0.03 + Math.random() * 0.04,
           twinklePhase: Math.random() * Math.PI * 2,
           colorPhase: Math.random(),
@@ -227,6 +321,149 @@ const CanvasParticles: React.FC = () => {
       const mouse = mouseRef.current;
       const mx = (mouse.x / 2 + 0.5) * w;
       const my = (mouse.y / 2 + 0.5) * h;
+
+      // 0A. Draw Billowing Volumetric Chemical Smoke Plumes
+      const smokes = smokeRef.current;
+      for (let i = 0; i < smokes.length; i++) {
+        const sm = smokes[i];
+        sm.x += sm.vx + Math.sin(time * 0.006 + sm.pulsePhase) * 0.25;
+        sm.y += sm.vy;
+        if (sm.y < -sm.radius) {
+          sm.y = h + sm.radius * 0.8;
+          sm.x = Math.random() * w;
+        }
+        if (sm.x < -sm.radius) sm.x = w + sm.radius * 0.8;
+        if (sm.x > w + sm.radius) sm.x = -sm.radius * 0.8;
+
+        const liveSmokeAlpha = sm.alpha * (0.75 + 0.25 * Math.sin(time * sm.pulseSpeed + sm.pulsePhase));
+        const sGrad = ctx.createRadialGradient(sm.x, sm.y, 0, sm.x, sm.y, sm.radius);
+        sGrad.addColorStop(0, `rgba(${sm.rgb.r}, ${sm.rgb.g}, ${sm.rgb.b}, ${liveSmokeAlpha})`);
+        sGrad.addColorStop(0.5, `rgba(${sm.rgb.r}, ${sm.rgb.g}, ${sm.rgb.b}, ${liveSmokeAlpha * 0.45})`);
+        sGrad.addColorStop(1, `rgba(${sm.rgb.r}, ${sm.rgb.g}, ${sm.rgb.b}, 0)`);
+        ctx.fillStyle = sGrad;
+        ctx.beginPath();
+        ctx.arc(sm.x, sm.y, sm.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 0B. Draw 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings (Breaking Bad Intro Vibe)
+      const cx = w * 0.54;
+      const cy = h * 0.48;
+      const zMin = 0.20;
+      const zMax = 1.68;
+      const zSpan = zMax - zMin;
+      const chemItems = chemFlowRef.current;
+
+      for (let i = 0; i < chemItems.length; i++) {
+        const item = chemItems[i];
+        item.z += item.vz;
+        item.rot += item.rotSpeed;
+
+        // Seamless 3D Z-depth wrap & respawn
+        if (item.z > zMax) {
+          item.z = zMin + 0.02;
+          item.nx = (Math.random() - 0.5) * 1.35;
+          item.ny = (Math.random() - 0.5) * 1.25;
+        } else if (item.z < zMin) {
+          item.z = zMax - 0.02;
+          item.nx = (Math.random() - 0.5) * 1.35;
+          item.ny = (Math.random() - 0.5) * 1.25;
+        }
+
+        // Normalized depth progress (0 at near clip, 1 at far clip)
+        const normZ = Math.max(0, Math.min(1, (item.z - zMin) / zSpan));
+        // Smooth bell-curve fade so formulas emerge from mist and dissolve into the deep background
+        const depthAlpha = Math.sin(normZ * Math.PI);
+        const perspectiveScale = 0.72 / item.z;
+
+        const sx = cx + (item.nx * w * 0.55 - mouse.x * 28) * perspectiveScale;
+        const sy = cy + (item.ny * h * 0.55 - mouse.y * 20) * perspectiveScale;
+
+        if (sx < -180 || sx > w + 180 || sy < -140 || sy > h + 140) continue;
+
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.scale(perspectiveScale, perspectiveScale);
+
+        const { r, g, b } = item.rgb;
+        const alpha = depthAlpha * 0.52;
+
+        if (item.kind === 'tile') {
+          // Periodic Table Element Tile (Breaking Bad Intro Style without show title)
+          const boxSize = 66;
+          const half = boxSize / 2;
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.22})`;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.95})`;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.roundRect(-half, -half, boxSize, boxSize, 6);
+          ctx.fill();
+          ctx.stroke();
+
+          // Atomic Mass (Top-Left) & Oxidation States (Top-Right)
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
+          ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(item.tile.mass, -half + 5, -half + 11);
+
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.95})`;
+          ctx.font = '7px "JetBrains Mono", monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(item.tile.ox, half - 5, -half + 11);
+
+          // Main Element Symbol (Center)
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.95, alpha * 1.35)})`;
+          ctx.font = 'bold 28px Georgia, "Times New Roman", serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(item.tile.sym, 0, 8);
+
+          // Atomic Number (Bottom-Left) & Electron Shells (Bottom-Right)
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 1.1})`;
+          ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(item.tile.num, -half + 5, half - 6);
+
+          ctx.fillStyle = `rgba(226, 232, 240, ${alpha * 0.75})`;
+          ctx.font = '6.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(item.tile.shells, half - 4, half - 6);
+        } else if (item.kind === 'ring') {
+          // 3D Rotating Benzene / Aromatic Hexagonal Ring
+          ctx.rotate(item.rot);
+          const rad = 28;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.85})`;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          for (let v = 0; v < 6; v++) {
+            const ang = (v * Math.PI) / 3;
+            const vx = Math.cos(ang) * rad;
+            const vy = Math.sin(ang) * rad;
+            if (v === 0) ctx.moveTo(vx, vy);
+            else ctx.lineTo(vx, vy);
+          }
+          ctx.closePath();
+          ctx.stroke();
+
+          // Inner aromatic delocalized pi-ring
+          ctx.beginPath();
+          ctx.arc(0, 0, rad * 0.58, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.55})`;
+          ctx.lineWidth = 1.1;
+          ctx.stroke();
+        } else {
+          // 3D Flowing Chemical Formula & Molecular Weight
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(0.9, alpha * 1.25)})`;
+          ctx.font = 'bold 21px Georgia, "Times New Roman", serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(item.formula.text, 0, 0);
+
+          ctx.fillStyle = `rgba(226, 232, 240, ${alpha * 0.8})`;
+          ctx.font = '9px "JetBrains Mono", monospace';
+          ctx.fillText(item.formula.sub, 0, 14);
+        }
+
+        ctx.restore();
+      }
 
       // 1. Draw Constellation Dust & Connective Quantum Lines (Squared distance calculation)
       const nodes = particlesRef.current;
@@ -266,7 +503,7 @@ const CanvasParticles: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(34, 211, 238, ${0.08 * (1 - dist2Sq / 7225)})`;
+            ctx.strokeStyle = `rgba(${p.color}, ${0.1 * (1 - dist2Sq / 7225)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -346,16 +583,28 @@ const CanvasParticles: React.FC = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />;
 };
 
-type ModeType = 'idle' | 'start' | 'socratic' | 'learning' | 'reagent' | 'organic' | 'calculating' | 'pet_shy1' | 'pet_shy2' | 'pet_punch' | 'pet_pout';
+type ModeType = 'idle' | 'start' | 'socratic' | 'learning' | 'reagent' | 'organic' | 'calculating' | 'topic_colors' | 'topic_secret' | 'topic_quiz' | 'pet_shy1' | 'pet_shy2' | 'pet_punch' | 'pet_pout';
 
 const MODE_DIALOGUES: Record<string, { EN: string; VN: string }> = {
   idle: {
-    EN: "System online! Welcome to the Chemic-AI Quantum Engine, Researcher! I'm Professor Lucy. Are we ready to synthesize something amazing today? :3",
-    VN: "Hệ thống trực tuyến! Chào mừng em đến với Chemic-AI Quantum Engine. Cô là Giáo sư Lucy. Chúng ta bắt đầu khám phá thế giới hóa học nhé? :3"
+    EN: "System online! Welcome to the Chemic-AI Quantum Engine, Researcher! Look at all the vivid chemical formulas & reaction spectra flowing around us — ready to synthesize something colourful today? :3",
+    VN: "Hệ thống trực tuyến! Chào mừng em đến với Chemic-AI Quantum Engine! Nhìn những công thức phân tử và dải sắc màu hóa học đang chuyển động quanh chúng ta kìa — sẵn sàng làm thí nghiệm rực rỡ hôm nay chưa? :3"
   },
   start: {
-    EN: "The virtual workbench is fully calibrated! Glassware, bunsen burners, and real-time thermodynamics are ready. Let's enter the lab! 🧪",
-    VN: "Bàn thí nghiệm đã hiệu chuẩn hoàn tất! Dụng cụ thủy tinh, đèn Bunsen và mô phỏng nhiệt động lực học sẵn sàng. Cùng vào phòng thí nghiệm nào! 🧪"
+    EN: "The virtual workbench is fully calibrated! Glassware, bunsen burners, vivid indicators, and real-time thermodynamics are ready. Let's enter the lab! 🧪",
+    VN: "Bàn thí nghiệm đã hiệu chuẩn hoàn tất! Dụng cụ thủy tinh, đèn Bunsen, chất chỉ thị màu rực rỡ và nhiệt động lực học đã sẵn sàng. Cùng vào phòng thí nghiệm nào! 🧪"
+  },
+  topic_colors: {
+    EN: "Chemistry is all about vivid colors! 🎨 Cu²⁺ glows sapphire blue, KMnO₄ shines royal violet, K₂Cr₂O₇ blazes golden amber, and [Fe(SCN)]²⁺ turns deep crimson due to d-orbital electron transitions!",
+    VN: "Hóa học là nghệ thuật của sắc màu! 🎨 Ion Cu²⁺ xanh lam ngọc, KMnO₄ tím hoàng gia, K₂Cr₂O₇ cam vàng rực lửa, còn phức [Fe(SCN)]²⁺ đỏ máu nhờ sự chuyển dịch electron trên phân lớp d đấy! :3"
+  },
+  topic_secret: {
+    EN: "Lab Secret! ✨ Try mixing Lead(II) Nitrate Pb(NO₃)₂ with Potassium Iodide KI in the workbench to precipitate shimmering Golden Rain (PbI₂↓), or test Cu²⁺ and Sr²⁺ in the Bunsen Flame!",
+    VN: "Bí mật phòng Lab! ✨ Hãy thử pha Chì(II) Nitrat Pb(NO₃)₂ với Kali Iodua KI để tạo hiện tượng 'Mưa Vàng' (PbI₂↓) lấp lánh, hoặc đốt thử muối Đồng Cu²⁺ (lục bảo) và Stronti Sr²⁺ (đỏ thẫm) nhé!"
+  },
+  topic_quiz: {
+    EN: "Quick Pop Quiz! ⚡ When you add excess NH₃ to pale-blue CuSO₄ solution, what dramatic color shift occurs? Hint: [Cu(NH₃)₄]²⁺ forms an intense deep royal sapphire complex! 💎",
+    VN: "Đố vui nhanh! ⚡ Khi nhỏ từ từ NH₃ tới dư vào dung dịch CuSO₄ xanh nhạt, màu sắc biến đổi thế nào? Gợi ý: Phức chất [Cu(NH₃)₄]²⁺ tạo thành có màu xanh lam thẫm tuyệt đẹp! 💎"
   },
   socratic: {
     EN: "Oho? Think your chemistry logic can survive my ruthless cross-examination? Come on, let's deconstruct your hypotheses! 😈",
@@ -657,15 +906,15 @@ const MainMenu: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* 3D Perspective Laboratory Floor Grid (MiSide Environment Feel) */}
+      {/* 3D Perspective Laboratory Floor Grid with Prismatic Chemical Spectrum */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" style={{ perspective: '800px' }}>
         <motion.div 
-          className="absolute -bottom-[40%] left-[-20%] w-[140%] h-[120%] origin-bottom opacity-20 pointer-events-none"
+          className="absolute -bottom-[40%] left-[-20%] w-[140%] h-[120%] origin-bottom opacity-25 pointer-events-none"
           style={{
             rotateX: bgGridRotateX,
             backgroundImage: `
-              linear-gradient(to right, rgba(34, 211, 238, 0.4) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(34, 211, 238, 0.4) 1px, transparent 1px)
+              linear-gradient(to right, rgba(16, 185, 129, 0.42) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(34, 211, 238, 0.38) 1px, transparent 1px)
             `,
             backgroundSize: '60px 60px',
             maskImage: 'linear-gradient(to top, black 20%, transparent 85%)',
@@ -674,29 +923,31 @@ const MainMenu: React.FC = () => {
         />
       </div>
 
-      {/* Atmospheric Quantum Particle Field */}
+      {/* Breaking Bad 3D Chemical Formula & Volumetric Smoke Field */}
       <CanvasParticles />
 
-      {/* Ambient Volumetric Nebulae */}
+      {/* Vivid Multi-Color Chemical Spectrum Nebulae ("Chemistry is About Colors") */}
       <motion.div 
         className="absolute inset-0 pointer-events-none z-0"
         style={{
           x: bgShiftX,
           background: useTransform(
-            () => `radial-gradient(circle at ${(smoothMouseX.get() / 2 + 0.5) * 100}% ${(smoothMouseY.get() / 2 + 0.5) * 100}%, rgba(6, 182, 212, 0.12) 0%, rgba(88, 28, 135, 0.05) 45%, transparent 70%)`
+            () => `radial-gradient(circle at ${(smoothMouseX.get() / 2 + 0.5) * 100}% ${(smoothMouseY.get() / 2 + 0.5) * 100}%, rgba(16, 185, 129, 0.16) 0%, rgba(6, 182, 212, 0.10) 32%, rgba(168, 85, 247, 0.08) 58%, transparent 78%)`
           )
         }}
       />
-      <div className="absolute top-0 right-1/4 w-[700px] h-[700px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute -top-20 left-1/4 w-[650px] h-[650px] bg-emerald-500/12 rounded-full blur-[145px] pointer-events-none" />
+      <div className="absolute top-10 right-1/4 w-[680px] h-[680px] bg-cyan-500/12 rounded-full blur-[145px] pointer-events-none" />
+      <div className="absolute bottom-12 left-1/3 w-[520px] h-[520px] bg-amber-500/10 rounded-full blur-[135px] pointer-events-none" />
+      <div className="absolute bottom-0 right-10 w-[560px] h-[560px] bg-purple-600/14 rounded-full blur-[130px] pointer-events-none" />
 
       {/* Cyber Telemetry Accents (MiSide Room HUD) */}
-      <div className="absolute top-6 left-8 z-20 pointer-events-none hidden lg:flex items-center gap-3 font-mono text-[10px] text-cyan-500/70 tracking-widest uppercase">
-        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+      <div className="absolute top-6 left-8 z-20 pointer-events-none hidden lg:flex items-center gap-3 font-mono text-[10px] text-emerald-300/80 tracking-widest uppercase">
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
         <span>
           {isMenuCracked 
             ? 'CORE // QUANTUM ENGINE [SCREEN MATRIX: DAMAGED] [IMPACT DETECTED]'
-            : 'CORE // QUANTUM ENGINE ACTIVE [LATENCY: 0.8ms] [STATUS: ONLINE]'}
+            : 'CORE // PRISMATIC CHEMICAL ENGINE ACTIVE [SPECTRAL SYNTHESIS: ONLINE]'}
         </span>
       </div>
 
@@ -790,7 +1041,7 @@ const MainMenu: React.FC = () => {
           </div>
         </div>
 
-        {/* Dynamic Holographic Comms Bubble (MiSide In-Game Subtitle Box) */}
+        {/* Renovated Professor Lucy Holographic Chat Console (Wide, Vivid & Interactive) */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentMode + rawLanguage + (currentMode === 'pet_pout' ? poutQuoteIdx : '')}
@@ -798,50 +1049,125 @@ const MainMenu: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.96 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="scifi-hud-card absolute bottom-[39%] right-[52%] xl:right-[55%] w-[430px] max-w-[85vw] bg-gradient-to-b from-[#041122]/96 via-[#020914]/96 to-[#01040a]/98 border border-cyan-400/45 p-5 rounded-3xl backdrop-blur-2xl shadow-[0_0_45px_rgba(0,0,0,0.92)] z-50 overflow-hidden pointer-events-auto"
+            style={{ position: 'absolute' }}
+            className="scifi-hud-card absolute bottom-[31%] right-[47%] xl:right-[51%] w-[455px] xl:w-[485px] max-w-[90vw] bg-gradient-to-br from-[#06182c]/96 via-[#040f20]/96 to-[#09081c]/98 border-2 border-cyan-400/55 p-5 rounded-3xl backdrop-blur-2xl shadow-[0_15px_55px_rgba(0,0,0,0.92),0_0_35px_rgba(16,185,129,0.22)] z-50 overflow-visible pointer-events-auto"
           >
-            {/* Ambient inner rim glow */}
-            <div className="absolute -top-12 -right-12 w-28 h-28 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
+            {/* Top Prismatic Chemical Spectrum Ribbon */}
+            <div className="absolute top-0 left-5 right-5 h-[3px] rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 via-purple-400 to-amber-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
 
-            {/* Bubble Tail pointing right towards Lucy */}
-            <div className="absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 bg-[#07172c] border-t-2 border-r-2 border-cyan-500/40 rotate-45" />
+            {/* Multi-color inner ambient glow */}
+            <div className="absolute -top-12 -left-10 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
+
+            {/* Speech Bubble Pointer Tail pointing right towards Professor Lucy */}
+            <div className="absolute top-1/2 -right-2.5 -translate-y-1/2 w-5 h-5 bg-[#07162c] border-t-2 border-r-2 border-cyan-400/60 rotate-45 shadow-[4px_-4px_12px_rgba(34,211,238,0.25)]" />
 
             <div className="relative z-10">
               {/* Header Bar */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-cyan-900/40">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-cyan-500/25">
                 <div className="flex items-center gap-3">
                   <div className="relative shrink-0">
-                    <img 
-                      src={lucyFacePFP} 
-                      alt="Avatar" 
-                      className="w-9 h-9 rounded-full border border-cyan-400/70 object-cover shadow-[0_0_12px_rgba(34,211,238,0.4)]"
-                    />
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-950 rounded-full animate-pulse" />
+                    <div className="p-0.5 rounded-full bg-gradient-to-tr from-emerald-400 via-cyan-400 to-purple-500 shadow-[0_0_15px_rgba(52,211,153,0.45)]">
+                      <img 
+                        src={lucyFacePFP} 
+                        alt="Prof. Lucy Avatar" 
+                        className="w-10 h-10 rounded-full object-cover border border-slate-950"
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-slate-950 rounded-full animate-pulse shadow-[0_0_8px_#34d399]" />
                   </div>
                   <div>
-                    <span className="font-mono font-bold text-xs text-white tracking-widest block uppercase">
-                      {isVi ? 'GS. LUCY' : 'PROF. LUCY'}
-                    </span>
-                    <span className="text-[10px] text-cyan-400 font-mono tracking-wider">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-black text-xs md:text-sm text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-emerald-200 tracking-wider uppercase">
+                        {isVi ? 'GIÁO SƯ LUCY' : 'PROF. LUCY'}
+                      </span>
+                      <span className="px-1.5 py-0.5 text-[8.5px] font-mono font-bold uppercase tracking-widest rounded-md bg-emerald-500/20 border border-emerald-400/40 text-emerald-300">
+                        AI LIVE
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-cyan-300/90 font-mono tracking-wider block mt-0.5">
                       {getSubtitleText()}
                     </span>
                   </div>
                 </div>
 
-                {/* Animated Speech Equalizer Wave */}
-                <div className="flex items-center gap-1 bg-cyan-950/60 px-2.5 py-1 rounded-xl border border-cyan-800/40">
-                  <span className="w-1 h-3 bg-cyan-400 rounded-full animate-[pulse_0.6s_ease-in-out_infinite]" />
-                  <span className="w-1 h-4 bg-cyan-300 rounded-full animate-[pulse_0.4s_ease-in-out_infinite_0.1s]" />
-                  <span className="w-1 h-2 bg-cyan-500 rounded-full animate-[pulse_0.8s_ease-in-out_infinite_0.2s]" />
-                  <span className="text-[9px] font-mono text-cyan-300 font-bold ml-1 tracking-wider">COMMS</span>
+                {/* Voice Synthesis Button + Multi-Color Spectrum Equalizer */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      audioManager.playClick();
+                      lucyVoiceEngine.speak(currentDialogue, isVi ? 'vi' : 'en');
+                    }}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-emerald-950/80 to-cyan-950/80 hover:from-emerald-900/90 hover:to-cyan-900/90 border border-emerald-400/50 text-emerald-200 text-[9.5px] font-mono font-bold tracking-wider uppercase transition-all shadow-[0_0_12px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
+                    title={isVi ? 'Nghe giọng nói của Giáo sư Lucy' : 'Listen to Professor Lucy'}
+                  >
+                    <span>🔊</span>
+                    <span>{isVi ? 'GIỌNG NÓI' : 'VOICE'}</span>
+                  </button>
+
+                  <div className="flex items-center gap-1 bg-slate-950/80 px-2.5 py-1.5 rounded-xl border border-cyan-500/30">
+                    <span className="w-1 h-3 bg-emerald-400 rounded-full animate-[pulse_0.6s_ease-in-out_infinite]" />
+                    <span className="w-1 h-4 bg-cyan-400 rounded-full animate-[pulse_0.4s_ease-in-out_infinite_0.1s]" />
+                    <span className="w-1 h-2.5 bg-purple-400 rounded-full animate-[pulse_0.7s_ease-in-out_infinite_0.2s]" />
+                    <span className="w-1 h-3.5 bg-amber-400 rounded-full animate-[pulse_0.5s_ease-in-out_infinite_0.3s]" />
+                    <span className="w-1 h-2 bg-rose-400 rounded-full animate-[pulse_0.8s_ease-in-out_infinite_0.15s]" />
+                  </div>
                 </div>
               </div>
 
-              {/* Dynamic Speech Text */}
-              <p className="text-slate-100 text-sm leading-relaxed font-sans min-h-[58px]">
-                {displayedText}
-                <span className={`ml-1 inline-block w-1.5 h-3.5 bg-cyan-400 align-middle ${isTyping ? 'animate-pulse' : 'animate-bounce'}`} />
-              </p>
+              {/* Dynamic Speech Text Box */}
+              <div className="bg-[#020813]/70 border border-cyan-500/20 rounded-2xl p-3.5 mb-3 shadow-inner">
+                <p className="text-slate-100 text-[13.5px] leading-relaxed font-sans min-h-[54px]">
+                  {displayedText}
+                  <span className={`ml-1 inline-block w-1.5 h-3.5 bg-emerald-400 align-middle ${isTyping ? 'animate-pulse' : 'animate-bounce'}`} />
+                </p>
+              </div>
+
+              {/* Interactive Quick-Topic Chips inside Main Menu Chat */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); audioManager.playClick(); setCurrentMode('topic_colors'); }}
+                  className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold tracking-wider transition-all cursor-pointer border ${
+                    currentMode === 'topic_colors'
+                      ? 'bg-pink-500/25 border-pink-400 text-pink-200 shadow-[0_0_12px_rgba(236,72,153,0.35)]'
+                      : 'bg-pink-950/40 hover:bg-pink-900/50 border-pink-500/35 text-pink-300'
+                  }`}
+                >
+                  🎨 {isVi ? 'Sắc Màu Hóa Học' : 'Color Chemistry'}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); audioManager.playClick(); setCurrentMode('topic_secret'); }}
+                  className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold tracking-wider transition-all cursor-pointer border ${
+                    currentMode === 'topic_secret'
+                      ? 'bg-amber-500/25 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.35)]'
+                      : 'bg-amber-950/40 hover:bg-amber-900/50 border-amber-500/35 text-amber-300'
+                  }`}
+                >
+                  ✨ {isVi ? 'Bí Mật Lab' : 'Lab Secret'}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); audioManager.playClick(); setCurrentMode('topic_quiz'); }}
+                  className={`px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold tracking-wider transition-all cursor-pointer border ${
+                    currentMode === 'topic_quiz'
+                      ? 'bg-emerald-500/25 border-emerald-400 text-emerald-200 shadow-[0_0_12px_rgba(16,185,129,0.35)]'
+                      : 'bg-emerald-950/40 hover:bg-emerald-900/50 border-emerald-500/35 text-emerald-300'
+                  }`}
+                >
+                  ⚡ {isVi ? 'Đố Vui' : 'Pop Quiz'}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); handleLucyInteraction(); }}
+                  className="px-2.5 py-1 rounded-xl font-mono text-[10px] font-bold tracking-wider bg-purple-950/40 hover:bg-purple-900/55 border border-purple-500/35 hover:border-purple-400 text-purple-200 transition-all cursor-pointer"
+                >
+                  🦊 {isVi ? 'Chọc Lucy' : 'Poke Lucy'}
+                </button>
+              </div>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -977,7 +1303,7 @@ const MainMenu: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Navigation Selector Buttons (Refined Sci-Fi Command Deck) */}
+          {/* Interactive Navigation Selector Buttons (Colorful Chemical Spectrum Command Deck) */}
           <div className="flex flex-col gap-2.5">
             {/* Primary Hero Button: START ENGINE */}
             <motion.button
@@ -986,21 +1312,21 @@ const MainMenu: React.FC = () => {
               onClick={handleStart}
               onMouseEnter={() => { audioManager.playHover(); setCurrentMode('start'); }}
               onMouseLeave={() => setCurrentMode('idle')}
-              className="scifi-hud-card group relative px-6 py-4 md:py-4.5 bg-gradient-to-r from-[#041a30]/95 via-[#021324]/95 to-[#010a14]/98 border-2 border-cyan-400/60 hover:border-cyan-300 rounded-3xl text-left transition-all duration-300 backdrop-blur-xl shadow-[0_0_35px_rgba(34,211,238,0.28)] hover:shadow-[0_0_50px_rgba(34,211,238,0.55)] overflow-hidden cursor-pointer"
+              className="scifi-hud-card group relative px-6 py-4 md:py-4.5 bg-gradient-to-r from-[#042825]/95 via-[#041d33]/95 to-[#160b2e]/95 border-2 border-emerald-400/65 hover:border-cyan-300 rounded-3xl text-left transition-all duration-300 backdrop-blur-xl shadow-[0_0_35px_rgba(16,185,129,0.28)] hover:shadow-[0_0_50px_rgba(34,211,238,0.55)] overflow-hidden cursor-pointer"
             >
               {/* Laser sweep animation on hover */}
-              <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent -translate-x-[100%] group-hover:animate-[sweep_1.4s_ease-in-out_infinite]" />
+              <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent -translate-x-[100%] group-hover:animate-[sweep_1.4s_ease-in-out_infinite]" />
               
               <div className="relative z-10 flex items-center justify-between">
                 <div>
-                  <span className="block font-mono text-cyan-400 text-[10.5px] tracking-[0.28em] uppercase mb-0.5 font-bold">
-                    {isVi ? 'KHỞI TẠO // BÀN THỰC NGHIỆM' : 'INITIALIZE WORKBENCH // PRIMARY PROTOCOL'}
+                  <span className="block font-mono text-emerald-300 text-[10.5px] tracking-[0.28em] uppercase mb-0.5 font-bold">
+                    {isVi ? 'KHỞI TẠO // BÀN THỰC NGHIỆM ĐA SẮC' : 'INITIALIZE WORKBENCH // PRIMARY PROTOCOL'}
                   </span>
-                  <span className="block font-black text-2xl md:text-3xl text-white tracking-wider uppercase group-hover:text-cyan-100 transition-colors font-mono">
+                  <span className="block font-black text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-cyan-200 tracking-wider uppercase font-mono">
                     {isVi ? 'BẮT ĐẦU THÍ NGHIỆM' : 'START ENGINE'}
                   </span>
                 </div>
-                <div className="w-11 h-11 rounded-2xl bg-cyan-500/20 border border-cyan-400/50 group-hover:border-cyan-300 group-hover:bg-cyan-400 group-hover:text-black flex items-center justify-center text-cyan-300 group-hover:translate-x-1.5 transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.35)]">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500/30 to-cyan-500/30 border border-emerald-400/60 group-hover:border-white group-hover:from-emerald-400 group-hover:to-cyan-400 group-hover:text-slate-950 flex items-center justify-center text-emerald-200 group-hover:translate-x-1.5 transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
                   <svg className="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
@@ -1011,26 +1337,26 @@ const MainMenu: React.FC = () => {
 
             {/* Feature Modes Grid/Stack */}
             <div className="flex flex-col gap-2.5">
-              {/* 01: Socratic Challenge Mode */}
+              {/* 01: Socratic Challenge Mode (Strontium Crimson / Rose) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setSocraticMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('socratic'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-rose-400/70 border-l-4 border-l-rose-500/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-rose-950/50 via-[#071122]/90 to-[#040a16]/95 hover:from-rose-900/60 hover:via-[#0b172e]/95 border border-rose-500/35 hover:border-rose-400/80 border-l-4 border-l-rose-500 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(244,63,94,0.12)] hover:shadow-[0_0_28px_rgba(244,63,94,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-rose-400 group-hover:text-rose-200 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-rose-950/80 border border-rose-400/50 text-rose-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-rose-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(244,63,94,0.25)]">
                     01
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors flex items-center gap-2">
+                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-rose-100 transition-colors flex items-center gap-2">
                       {isVi ? 'THÁCH THỨC SOCRATIC' : 'SOCRATIC CHALLENGE'}
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-rose-950/60 border border-rose-500/40 text-rose-300 font-mono font-bold uppercase tracking-wider">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-rose-500/20 border border-rose-400/50 text-rose-200 font-mono font-bold uppercase tracking-wider">
                         {isVi ? 'BẺ GÃY NGỘ NHẬN' : 'LOGIC PROTOCOL'}
                       </span>
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Chất vấn sâu & Rèn luyện tư duy phản biện Hóa học' : 'Strict Chemical Logic Interrogation'}
                     </span>
                   </div>
@@ -1040,32 +1366,32 @@ const MainMenu: React.FC = () => {
                     <circle cx="12" cy="12" r="3" />
                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                   </svg>
-                  <span className="text-rose-400/50 group-hover:text-rose-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-rose-400 group-hover:text-rose-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
 
-              {/* 02: Learning Lab Mode */}
+              {/* 02: Learning Lab Mode (Viridian / Emerald) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setLearningMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('learning'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-emerald-400/70 border-l-4 border-l-emerald-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-emerald-950/50 via-[#061622]/90 to-[#040a16]/95 hover:from-emerald-900/60 hover:via-[#092230]/95 border border-emerald-500/35 hover:border-emerald-400/80 border-l-4 border-l-emerald-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(16,185,129,0.12)] hover:shadow-[0_0_28px_rgba(16,185,129,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-emerald-400 group-hover:text-emerald-200 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-emerald-950/80 border border-emerald-400/50 text-emerald-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-emerald-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(16,185,129,0.25)]">
                     02
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-emerald-100 transition-colors">
                         {isVi ? 'PHÒNG CỐ VẤN HỌC TẬP' : 'LEARNING LAB & MENTOR'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-mono font-bold uppercase tracking-wider">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/50 text-emerald-200 font-mono font-bold uppercase tracking-wider">
                         {isVi ? 'THPT QUỐC GIA' : 'AI TUTOR'}
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Hỗ trợ giải bài tập & Luyện thi THPTQG 2026-2027' : 'Homework Assistant & Curriculum Tutor'}
                     </span>
                   </div>
@@ -1075,27 +1401,27 @@ const MainMenu: React.FC = () => {
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                     <path d="M6 12v5c3 3 9 3 12 0v-5" />
                   </svg>
-                  <span className="text-emerald-400/50 group-hover:text-emerald-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-emerald-400 group-hover:text-emerald-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
 
-              {/* 03: Reagent Database */}
+              {/* 03: Reagent Database (Copper Sulfate Cyan) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); setIsReagentDbOpen(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('reagent'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-cyan-400/70 border-l-4 border-l-cyan-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(6,182,212,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-cyan-950/55 via-[#061628]/90 to-[#040a16]/95 hover:from-cyan-900/65 hover:via-[#092038]/95 border border-cyan-500/35 hover:border-cyan-400/80 border-l-4 border-l-cyan-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(6,182,212,0.12)] hover:shadow-[0_0_28px_rgba(6,182,212,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-cyan-300 group-hover:text-cyan-100 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-cyan-950/80 border border-cyan-400/50 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-cyan-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(6,182,212,0.25)]">
                     03
                   </span>
                   <div className="flex flex-col">
-                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                    <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-cyan-100 transition-colors">
                       {isVi ? 'TỪ ĐIỂN 118 NGUYÊN TỐ' : 'REAGENT DATABASE'}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Tra cứu orbital & thông số hóa học IUPAC' : 'Quantum Electron Orbitals & Reagents'}
                     </span>
                   </div>
@@ -1107,32 +1433,32 @@ const MainMenu: React.FC = () => {
                     <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)" />
                     <circle cx="12" cy="12" r="1.5" fill="currentColor" />
                   </svg>
-                  <span className="text-cyan-400/50 group-hover:text-cyan-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-cyan-400 group-hover:text-cyan-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
 
-              {/* 04: Organic Chemistry Wordle Puzzle */}
+              {/* 04: Organic Chemistry Wordle Puzzle (Permanganate Royal Violet) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setOrganicMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('organic'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-purple-400/70 border-l-4 border-l-purple-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-purple-950/55 via-[#0e0c26]/90 to-[#040a16]/95 hover:from-purple-900/65 hover:via-[#161236]/95 border border-purple-500/35 hover:border-purple-400/80 border-l-4 border-l-purple-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(168,85,247,0.12)] hover:shadow-[0_0_28px_rgba(168,85,247,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-purple-400 group-hover:text-purple-200 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-purple-950/80 border border-purple-400/50 text-purple-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-purple-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(168,85,247,0.25)]">
                     04
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-purple-100 transition-colors">
                         {isVi ? 'HÓA HỌC HỮU CƠ' : 'ORGANIC CHEMISTRY'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-purple-950/60 border border-purple-500/40 text-purple-300 font-mono font-bold tracking-wider uppercase">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-400/50 text-purple-200 font-mono font-bold tracking-wider uppercase">
                         CRAFT / PUZZLE
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Xưởng phân tử vô tận & Câu đố tổng hợp' : 'Molecular Sandbox & Synthesis Puzzle'}
                     </span>
                   </div>
@@ -1142,32 +1468,32 @@ const MainMenu: React.FC = () => {
                     <path d="M12 2l7.5 4.3v8.6L12 22l-7.5-4.3V6.3L12 2z" />
                     <circle cx="12" cy="12" r="3" />
                   </svg>
-                  <span className="text-purple-400/50 group-hover:text-purple-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-purple-400 group-hover:text-purple-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
 
-              {/* 05: Complete Chemistry Curriculum Academy (Grades 8 - 12) */}
+              {/* 05: Complete Chemistry Curriculum Academy (Malachite Teal) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); setIsCurriculumOpen(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('learning'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-teal-400/70 border-l-4 border-l-teal-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(20,184,166,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-teal-950/55 via-[#061824]/90 to-[#040a16]/95 hover:from-teal-900/65 hover:via-[#092434]/95 border border-teal-500/35 hover:border-teal-400/80 border-l-4 border-l-teal-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(20,184,166,0.12)] hover:shadow-[0_0_28px_rgba(20,184,166,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-teal-400 group-hover:text-teal-200 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-teal-950/80 border border-teal-400/50 text-teal-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-teal-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(20,184,166,0.25)]">
                     05
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-teal-100 transition-colors">
                         {isVi ? 'GIÁO TRÌNH HÓA HỌC 8 - 12' : 'CHEMISTRY ACADEMY (8-12)'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-teal-950/60 border border-teal-500/40 text-teal-300 font-mono font-bold tracking-wider uppercase">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-teal-500/20 border border-teal-400/50 text-teal-200 font-mono font-bold tracking-wider uppercase">
                         KẾT NỐI TRI THỨC
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Toàn bộ bài học, định luật, công thức & thí nghiệm' : 'Complete Curriculum, Formulas & Direct Lab Load'}
                     </span>
                   </div>
@@ -1177,32 +1503,32 @@ const MainMenu: React.FC = () => {
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                   </svg>
-                  <span className="text-teal-400/50 group-hover:text-teal-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-teal-400 group-hover:text-teal-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
 
-              {/* 06: Calculating Mode (Formula Sheet & Grade 8-12 Calculations) */}
+              {/* 06: Calculating Mode (Dichromate Amber / Gold) */}
               <motion.button 
                 whileHover={{ x: 6 }}
                 onClick={() => { audioManager.playClick(); useSimulationStore.getState().setCalculatingMode(true); }}
                 onMouseEnter={() => { audioManager.playHover(); setCurrentMode('calculating'); }}
                 onMouseLeave={() => setCurrentMode('idle')}
-                className="relative px-5 py-3 md:py-3.5 bg-[#030914]/85 hover:bg-[#07152b]/95 border border-cyan-500/25 hover:border-amber-400/70 border-l-4 border-l-amber-400/80 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_15px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(245,158,11,0.3)] cursor-pointer overflow-hidden"
+                className="relative px-5 py-3 md:py-3.5 bg-gradient-to-r from-amber-950/55 via-[#161209]/90 to-[#040a16]/95 hover:from-amber-900/65 hover:via-[#241c0d]/95 border border-amber-500/35 hover:border-amber-400/80 border-l-4 border-l-amber-400 rounded-2xl text-left transition-all duration-200 backdrop-blur-xl flex items-center justify-between group shadow-[0_0_18px_rgba(245,158,11,0.12)] hover:shadow-[0_0_28px_rgba(245,158,11,0.35)] cursor-pointer overflow-hidden"
               >
                 <div className="flex items-center gap-3.5">
-                  <span className="w-8 h-8 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-amber-400 group-hover:text-amber-200 transition-all shadow-inner">
+                  <span className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-400/50 text-amber-300 font-mono text-xs md:text-sm font-bold flex items-center justify-center group-hover:border-amber-300 group-hover:text-white transition-all shadow-[0_0_10px_rgba(245,158,11,0.25)]">
                     06
                   </span>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-white transition-colors">
+                      <span className="text-slate-100 font-bold tracking-wider uppercase text-sm md:text-base group-hover:text-amber-100 transition-colors">
                         {isVi ? 'CHẾ ĐỘ TÍNH TOÁN // BẢNG CÔNG THỨC' : 'CALCULATING MODE // FORMULA LAB'}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-amber-950/60 border border-amber-500/40 text-amber-300 font-mono font-bold tracking-wider uppercase">
+                      <span className="text-[9px] px-2 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/50 text-amber-200 font-mono font-bold tracking-wider uppercase">
                         GDPT 2018
                       </span>
                     </div>
-                    <span className="text-xs text-slate-400 font-mono">
+                    <span className="text-xs text-slate-300/80 font-mono">
                       {isVi ? 'Bảng công thức 8-12, máy tính thế số & bài tập lượng giác' : 'Formula Sheet, Variable Solvers & Stoichiometry Practice'}
                     </span>
                   </div>
@@ -1214,7 +1540,7 @@ const MainMenu: React.FC = () => {
                     <line x1="16" y1="14" x2="16" y2="18" />
                     <path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01" />
                   </svg>
-                  <span className="text-amber-400/50 group-hover:text-amber-300 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
+                  <span className="text-amber-400 group-hover:text-amber-200 group-hover:translate-x-1 transition-all text-xs font-mono font-bold">→</span>
                 </div>
               </motion.button>
             </div>
