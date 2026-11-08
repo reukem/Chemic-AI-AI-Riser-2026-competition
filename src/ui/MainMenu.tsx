@@ -47,7 +47,7 @@ const CanvasParticles: React.FC = () => {
     { r: 250, g: 204, b: 21 }    // Lead Iodide Golden Rain (#facc15)
   ];
 
-  // Periodic Element Tiles for 3D Z-Space Flow (Breaking Bad Intro Style without logo)
+  // Periodic Element Tiles for 3D Z-Space Flow (Breaking Bad Intro Style without logo — 12 unique elements)
   const ELEMENT_TILES = [
     { sym: 'Br', num: '35', mass: '79.904', ox: '-1 +1 +5', shells: '2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
     { sym: 'Ba', num: '56', mass: '137.33', ox: '+2', shells: '2-8-18-18-8-2', rgb: { r: 132, g: 204, b: 22 } },
@@ -58,10 +58,12 @@ const CanvasParticles: React.FC = () => {
     { sym: 'Au', num: '79', mass: '196.97', ox: '+1 +3', shells: '2-8-18-32-18-1', rgb: { r: 250, g: 204, b: 21 } },
     { sym: 'Ag', num: '47', mass: '107.87', ox: '+1', shells: '2-8-18-18-1', rgb: { r: 56, g: 189, b: 248 } },
     { sym: 'Co', num: '27', mass: '58.933', ox: '+2 +3', shells: '2-8-15-2', rgb: { r: 236, g: 72, b: 153 } },
-    { sym: 'Pt', num: '78', mass: '195.08', ox: '+2 +4', shells: '2-8-18-32-17-1', rgb: { r: 45, g: 212, b: 191 } }
+    { sym: 'Pt', num: '78', mass: '195.08', ox: '+2 +4', shells: '2-8-18-32-17-1', rgb: { r: 45, g: 212, b: 191 } },
+    { sym: 'Ni', num: '28', mass: '58.693', ox: '+2 +3', shells: '2-8-16-2', rgb: { r: 52, g: 211, b: 153 } },
+    { sym: 'Hg', num: '80', mass: '200.59', ox: '+1 +2', shells: '2-8-18-32-18-2', rgb: { r: 129, g: 140, b: 248 } }
   ];
 
-  // Chemical Formulas & Molecular Masses Flowing in 3D Z-Space
+  // Chemical Formulas & Molecular Masses Flowing in 3D Z-Space (18 unique formulas)
   const CHEMICAL_FORMULAS = [
     { text: 'C₁₀H₁₅N', sub: '149.24 g/mol • CHIRAL SYNTHESIS', rgb: { r: 52, g: 211, b: 153 } },
     { text: 'CuSO₄·5H₂O', sub: '249.68 • [Cu(H₂O)₄]²⁺ AZURE', rgb: { r: 34, g: 211, b: 238 } },
@@ -76,7 +78,11 @@ const CanvasParticles: React.FC = () => {
     { text: '1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰', sub: 'QUANTUM ELECTRON SHELLS • 2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
     { text: '[Cu(NH₃)₄]²⁺', sub: 'TETRAAMMINE DEEP ROYAL SAPPHIRE', rgb: { r: 129, g: 140, b: 248 } },
     { text: 'AgNO₃ + NaCl → AgCl↓', sub: '143.32 • Ksp = 1.77×10⁻¹⁰', rgb: { r: 45, g: 212, b: 191 } },
-    { text: 'CH₃COOH ⇌ CH₃COO⁻ + H⁺', sub: 'pKa = 4.76 • BUFFER SYSTEM', rgb: { r: 244, g: 114, b: 182 } }
+    { text: 'CH₃COOH ⇌ CH₃COO⁻ + H⁺', sub: 'pKa = 4.76 • BUFFER SYSTEM', rgb: { r: 244, g: 114, b: 182 } },
+    { text: '[Co(H₂O)₆]²⁺ ⇌ [CoCl₄]²⁻', sub: 'LE CHATELIER THERMOCHROMIC SHIFT', rgb: { r: 236, g: 72, b: 153 } },
+    { text: 'E = E° - (RT/nF)·ln(Q)', sub: 'NERNST ELECTROCHEMICAL POTENTIAL', rgb: { r: 34, g: 211, b: 238 } },
+    { text: 'Na₂S₂O₃ + 2HCl → S↓ + SO₂↑', sub: 'COLLOIDAL SULFUR TYNDALL SCATTER', rgb: { r: 250, g: 204, b: 21 } },
+    { text: 'C₂₀H₁₄O₄', sub: '318.32 • PHENOLPHTHALEIN MAGENTA', rgb: { r: 244, g: 63, b: 94 } }
   ];
 
   const getInterpolatedColor = (phase: number) => {
@@ -205,6 +211,21 @@ const CanvasParticles: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
+    const zMin = 0.52;
+    const zMax = 5.20;
+    const zSpan = zMax - zMin;
+    const gridCols = 7;
+    const gridRows = 4;
+
+    const sampleGridPos = (col: number, row: number) => {
+      const cellW = 1.88 / gridCols; // spans -0.94 to +0.94 across full viewport width
+      const cellH = 1.84 / gridRows; // spans -0.92 to +0.92 across full viewport height
+      return {
+        nx: -0.94 + (col + 0.15 + Math.random() * 0.70) * cellW,
+        ny: -0.92 + (row + 0.15 + Math.random() * 0.70) * cellH
+      };
+    };
+
     const initField = () => {
       particlesRef.current = [];
       sparksRef.current = [];
@@ -212,7 +233,7 @@ const CanvasParticles: React.FC = () => {
       smokeRef.current = [];
       chemFlowRef.current = [];
 
-      // 0A. Volumetric Chemical Smoke Plumes (Breaking Bad Atmospheric Fumes)
+      // 0A. Volumetric Chemical Smoke Plumes (Full-Screen Breaking Bad Atmospheric Fumes)
       const smokePalette = [
         { r: 16, g: 185, b: 129 },   // Viridian Emerald Smoke
         { r: 132, g: 204, b: 22 },   // Chlorine / Lime Fume
@@ -221,43 +242,64 @@ const CanvasParticles: React.FC = () => {
         { r: 6, g: 182, b: 212 },    // Copper Sulfate Cyan Haze
         { r: 244, g: 63, b: 94 }     // Strontium Rose Mist
       ];
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 22; i++) {
         const sColor = smokePalette[i % smokePalette.length];
         smokeRef.current.push({
-          x: Math.random() * w,
+          x: ((i + 0.5) / 22) * w + (Math.random() - 0.5) * 90,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.38,
-          vy: -0.15 - Math.random() * 0.28,
-          radius: 150 + Math.random() * 190,
-          alpha: 0.045 + Math.random() * 0.055,
-          pulseSpeed: 0.008 + Math.random() * 0.012,
+          vx: (Math.random() - 0.5) * 14, // pixels per second
+          vy: -(8 + Math.random() * 12),  // slow upward waft in pixels per second
+          radius: 170 + Math.random() * 210,
+          alpha: 0.045 + Math.random() * 0.05,
+          pulseSpeed: 0.45 + Math.random() * 0.55,
           pulsePhase: Math.random() * Math.PI * 2,
           rgb: sColor
         });
       }
 
-      // 0B. 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
-      const total3DItems = 26;
+      // 0B. Full-Screen 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
+      // Unidirectional: every item glides slowly into the deep background until invisible, then respawns
+      const total3DItems = gridCols * gridRows; // 28 stratified full-screen sectors
+      let tileIdx = 0;
+      let formulaIdx = 0;
+
       for (let i = 0; i < total3DItems; i++) {
-        const kindRoll = i % 5;
-        const kind = kindRoll === 0 ? 'tile' : kindRoll === 4 ? 'ring' : 'formula';
-        const tileData = ELEMENT_TILES[i % ELEMENT_TILES.length];
-        const formulaData = CHEMICAL_FORMULAS[i % CHEMICAL_FORMULAS.length];
+        const col = i % gridCols;
+        const row = Math.floor(i / gridCols);
+        const pos = sampleGridPos(col, row);
+
+        // Interleave unique periodic tiles (10), unique chemical formulas (14), and aromatic rings (4)
+        let kind: 'tile' | 'formula' | 'ring' = 'formula';
+        if (i % 7 === 0 || i % 7 === 3) {
+          kind = tileIdx < 10 ? 'tile' : 'formula';
+        } else if (i % 7 === 5) {
+          kind = 'ring';
+        }
+
+        const tileData = ELEMENT_TILES[tileIdx % ELEMENT_TILES.length];
+        if (kind === 'tile') tileIdx++;
+
+        const formulaData = CHEMICAL_FORMULAS[formulaIdx % CHEMICAL_FORMULAS.length];
+        if (kind !== 'tile') formulaIdx++;
+
         const rgb = kind === 'tile' ? tileData.rgb : formulaData.rgb;
-        // Alternate directions: some flow into the deep background (+vz), some emerge toward viewer (-vz)
-        const intoBack = i % 3 !== 0;
+        // Golden-ratio depth staggering so adjacent screen cells are at completely different Z depths
+        const staggeredNormZ = (i * 0.61803398875) % 1;
+
         chemFlowRef.current.push({
-          // Spread across screen in normalized coordinates (-0.65 to +0.65 from center)
-          nx: (Math.random() - 0.5) * 1.35,
-          ny: (Math.random() - 0.5) * 1.25,
-          z: 0.22 + (i / total3DItems) * 1.45,
-          vz: intoBack ? (0.0022 + Math.random() * 0.0018) : -(0.0020 + Math.random() * 0.0016),
+          col,
+          row,
+          nx: pos.nx,
+          ny: pos.ny,
+          z: zMin + staggeredNormZ * zSpan,
+          // Slow, hypnotic unidirectional recession into the deep background (~26-34 seconds full depth journey)
+          vz: 0.135 + Math.random() * 0.045,
           kind,
           tile: tileData,
           formula: formulaData,
           rgb,
           rot: (Math.random() - 0.5) * 0.35,
-          rotSpeed: (Math.random() - 0.5) * 0.002
+          rotSpeed: (Math.random() - 0.5) * 0.12 // radians per second
         });
       }
 
@@ -307,14 +349,21 @@ const CanvasParticles: React.FC = () => {
 
     initField();
 
+    let lastFrameTime = performance.now();
+
     const draw = () => {
       // Pause drawing when tab is hidden to save CPU/GPU cycles
       if (document.hidden) {
+        lastFrameTime = performance.now();
         animationFrameId = requestAnimationFrame(draw);
         return;
       }
 
-      time += 1;
+      const now = performance.now();
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastFrameTime) / 1000));
+      lastFrameTime = now;
+      time += dt;
+
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'screen';
 
@@ -322,12 +371,12 @@ const CanvasParticles: React.FC = () => {
       const mx = (mouse.x / 2 + 0.5) * w;
       const my = (mouse.y / 2 + 0.5) * h;
 
-      // 0A. Draw Billowing Volumetric Chemical Smoke Plumes
+      // 0A. Draw Billowing Volumetric Chemical Smoke Plumes Across Full Screen
       const smokes = smokeRef.current;
       for (let i = 0; i < smokes.length; i++) {
         const sm = smokes[i];
-        sm.x += sm.vx + Math.sin(time * 0.006 + sm.pulsePhase) * 0.25;
-        sm.y += sm.vy;
+        sm.x += (sm.vx + Math.sin(time * 0.35 + sm.pulsePhase) * 10) * dt;
+        sm.y += sm.vy * dt;
         if (sm.y < -sm.radius) {
           sm.y = h + sm.radius * 0.8;
           sm.x = Math.random() * w;
@@ -346,47 +395,60 @@ const CanvasParticles: React.FC = () => {
         ctx.fill();
       }
 
-      // 0B. Draw 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings (Breaking Bad Intro Vibe)
-      const cx = w * 0.54;
-      const cy = h * 0.48;
-      const zMin = 0.20;
-      const zMax = 1.68;
-      const zSpan = zMax - zMin;
+      // 0B. Draw Full-Screen 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
+      const cx = w * 0.50;
+      const cy = h * 0.50;
       const chemItems = chemFlowRef.current;
 
       for (let i = 0; i < chemItems.length; i++) {
         const item = chemItems[i];
-        item.z += item.vz;
-        item.rot += item.rotSpeed;
+        // Unidirectional slow drift deep into the background
+        item.z += item.vz * dt;
+        item.rot += item.rotSpeed * dt;
 
-        // Seamless 3D Z-depth wrap & respawn
+        // Respawn at near plane ONLY after receding all the way past zMax (where alpha is already 0)
         if (item.z > zMax) {
-          item.z = zMin + 0.02;
-          item.nx = (Math.random() - 0.5) * 1.35;
-          item.ny = (Math.random() - 0.5) * 1.25;
-        } else if (item.z < zMin) {
-          item.z = zMax - 0.02;
-          item.nx = (Math.random() - 0.5) * 1.35;
-          item.ny = (Math.random() - 0.5) * 1.25;
+          item.z = zMin;
+          const nextPos = sampleGridPos(item.col, item.row);
+          item.nx = nextPos.nx;
+          item.ny = nextPos.ny;
         }
 
-        // Normalized depth progress (0 at near clip, 1 at far clip)
+        // Normalized depth progress (0.0 at near plane -> 1.0 at deep far plane)
         const normZ = Math.max(0, Math.min(1, (item.z - zMin) / zSpan));
-        // Smooth bell-curve fade so formulas emerge from mist and dissolve into the deep background
-        const depthAlpha = Math.sin(normZ * Math.PI);
-        const perspectiveScale = 0.72 / item.z;
 
-        const sx = cx + (item.nx * w * 0.55 - mouse.x * 28) * perspectiveScale;
-        const sy = cy + (item.ny * h * 0.55 - mouse.y * 20) * perspectiveScale;
+        // Smooth fade-in from foreground mist, sustained clarity in mid-field,
+        // and complete fade-out into deep background (0.0 alpha from normZ >= 0.86 to 1.0)
+        let depthAlpha = 0;
+        if (normZ < 0.15) {
+          depthAlpha = Math.pow(normZ / 0.15, 1.5);
+        } else if (normZ <= 0.36) {
+          depthAlpha = 1.0;
+        } else if (normZ < 0.86) {
+          depthAlpha = Math.pow(1.0 - (normZ - 0.36) / 0.50, 2.2);
+        } else {
+          depthAlpha = 0.0;
+        }
 
-        if (sx < -180 || sx > w + 180 || sy < -140 || sy > h + 140) continue;
+        // Skip drawing while completely invisible at the far end of the Z-tunnel
+        if (depthAlpha <= 0.004) continue;
+
+        // Visual size shrinks continuously with 3D depth (from ~2.0x in foreground down to ~0.20x far away)
+        const perspectiveScale = 1.05 / item.z;
+        // Gentle radial perspective pull toward vanishing point (cx, cy) while preserving 100% full-screen coverage
+        const pull = 1.0 - normZ * 0.30;
+
+        const sx = cx + item.nx * (w * 0.52) * pull - mouse.x * (18 * perspectiveScale);
+        const sy = cy + item.ny * (h * 0.52) * pull - mouse.y * (14 * perspectiveScale);
+
+        if (sx < -220 || sx > w + 220 || sy < -160 || sy > h + 160) continue;
 
         ctx.save();
         ctx.translate(sx, sy);
         ctx.scale(perspectiveScale, perspectiveScale);
 
         const { r, g, b } = item.rgb;
-        const alpha = depthAlpha * 0.52;
+        const alpha = depthAlpha * 0.56;
 
         if (item.kind === 'tile') {
           // Periodic Table Element Tile (Breaking Bad Intro Style without show title)
@@ -466,12 +528,14 @@ const CanvasParticles: React.FC = () => {
       }
 
       // 1. Draw Constellation Dust & Connective Quantum Lines (Squared distance calculation)
+      const dtScale = dt * 60;
+      const frameTime = time * 60;
       const nodes = particlesRef.current;
       const nodeLen = nodes.length;
       for (let i = 0; i < nodeLen; i++) {
         const p = nodes[i];
-        p.x += p.vx;
-        p.y += p.vy;
+        p.x += p.vx * dtScale;
+        p.y += p.vy * dtScale;
 
         if (p.x < 0) p.x = w;
         if (p.x > w) p.x = 0;
@@ -484,8 +548,8 @@ const CanvasParticles: React.FC = () => {
         if (distSq < 14400) { // 120px squared
           const dist = Math.sqrt(distSq);
           const force = (120 - dist) / 120;
-          p.x -= (dx / dist) * force * 0.8;
-          p.y -= (dy / dist) * force * 0.8;
+          p.x -= (dx / dist) * force * 0.8 * dtScale;
+          p.y -= (dy / dist) * force * 0.8 * dtScale;
         }
 
         ctx.beginPath();
@@ -515,10 +579,10 @@ const CanvasParticles: React.FC = () => {
       const sparkLen = sparks.length;
       for (let sIdx = 0; sIdx < sparkLen; sIdx++) {
         const s = sparks[sIdx];
-        s.y += s.vy;
-        s.x += Math.sin(time * s.swaySpeed + s.swayPhase) * 0.35;
-        s.colorPhase += s.colorSpeed;
-        s.rotation += s.rotSpeed;
+        s.y += s.vy * dtScale;
+        s.x += Math.sin(frameTime * s.swaySpeed + s.swayPhase) * 0.35 * dtScale;
+        s.colorPhase += s.colorSpeed * dtScale;
+        s.rotation += s.rotSpeed * dtScale;
 
         if (s.y < -20) {
           s.y = h + 20;
@@ -527,7 +591,7 @@ const CanvasParticles: React.FC = () => {
         if (s.x < 0) s.x = w;
         if (s.x > w) s.x = 0;
 
-        const liveAlpha = Math.max(0.12, Math.min(1.0, s.baseAlpha + Math.sin(time * s.twinkleSpeed + s.twinklePhase) * 0.4));
+        const liveAlpha = Math.max(0.12, Math.min(1.0, s.baseAlpha + Math.sin(frameTime * s.twinkleSpeed + s.twinklePhase) * 0.4));
         const rgb = getInterpolatedColor(s.colorPhase);
 
         if (s.isStar) {
