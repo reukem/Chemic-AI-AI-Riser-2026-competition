@@ -47,42 +47,101 @@ const CanvasParticles: React.FC = () => {
     { r: 250, g: 204, b: 21 }    // Lead Iodide Golden Rain (#facc15)
   ];
 
-  // Periodic Element Tiles for 3D Z-Space Flow (Breaking Bad Intro Style without logo — 12 unique elements)
-  const ELEMENT_TILES = [
-    { sym: 'Br', num: '35', mass: '79.904', ox: '-1 +1 +5', shells: '2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
-    { sym: 'Ba', num: '56', mass: '137.33', ox: '+2', shells: '2-8-18-18-8-2', rgb: { r: 132, g: 204, b: 22 } },
-    { sym: 'Cu', num: '29', mass: '63.546', ox: '+1 +2', shells: '2-8-18-1', rgb: { r: 34, g: 211, b: 238 } },
-    { sym: 'Cr', num: '24', mass: '51.996', ox: '+2 +3 +6', shells: '2-8-13-1', rgb: { r: 245, g: 158, b: 11 } },
-    { sym: 'Mn', num: '25', mass: '54.938', ox: '+2 +4 +7', shells: '2-8-13-2', rgb: { r: 168, g: 85, b: 247 } },
-    { sym: 'Fe', num: '26', mass: '55.845', ox: '+2 +3', shells: '2-8-14-2', rgb: { r: 244, g: 63, b: 94 } },
-    { sym: 'Au', num: '79', mass: '196.97', ox: '+1 +3', shells: '2-8-18-32-18-1', rgb: { r: 250, g: 204, b: 21 } },
-    { sym: 'Ag', num: '47', mass: '107.87', ox: '+1', shells: '2-8-18-18-1', rgb: { r: 56, g: 189, b: 248 } },
-    { sym: 'Co', num: '27', mass: '58.933', ox: '+2 +3', shells: '2-8-15-2', rgb: { r: 236, g: 72, b: 153 } },
-    { sym: 'Pt', num: '78', mass: '195.08', ox: '+2 +4', shells: '2-8-18-32-17-1', rgb: { r: 45, g: 212, b: 191 } },
-    { sym: 'Ni', num: '28', mass: '58.693', ox: '+2 +3', shells: '2-8-16-2', rgb: { r: 52, g: 211, b: 153 } },
-    { sym: 'Hg', num: '80', mass: '200.59', ox: '+1 +2', shells: '2-8-18-32-18-2', rgb: { r: 129, g: 140, b: 248 } }
+  // Complete 118-Element IUPAC Periodic Table Sequence (1 H -> 118 Og)
+  const RAW_118_ELEMENTS = [
+    'H|1.008|+1 -1|1', 'He|4.0026|0|2', 'Li|6.94|+1|2-1', 'Be|9.0122|+2|2-2', 'B|10.81|+3|2-3',
+    'C|12.011|-4 +2 +4|2-4', 'N|14.007|-3 +3 +5|2-5', 'O|15.999|-2|2-6', 'F|18.998|-1|2-7', 'Ne|20.180|0|2-8',
+    'Na|22.990|+1|2-8-1', 'Mg|24.305|+2|2-8-2', 'Al|26.982|+3|2-8-3', 'Si|28.085|-4 +4|2-8-4', 'P|30.974|-3 +3 +5|2-8-5',
+    'S|32.06|-2 +4 +6|2-8-6', 'Cl|35.45|-1 +1 +5 +7|2-8-7', 'Ar|39.948|0|2-8-8', 'K|39.098|+1|2-8-8-1', 'Ca|40.078|+2|2-8-8-2',
+    'Sc|44.956|+3|2-8-9-2', 'Ti|47.867|+2 +3 +4|2-8-10-2', 'V|50.942|+2 +3 +4 +5|2-8-11-2', 'Cr|51.996|+2 +3 +6|2-8-13-1', 'Mn|54.938|+2 +4 +7|2-8-13-2',
+    'Fe|55.845|+2 +3|2-8-14-2', 'Co|58.933|+2 +3|2-8-15-2', 'Ni|58.693|+2 +3|2-8-16-2', 'Cu|63.546|+1 +2|2-8-18-1', 'Zn|65.38|+2|2-8-18-2',
+    'Ga|69.723|+3|2-8-18-3', 'Ge|72.630|+2 +4|2-8-18-4', 'As|74.922|-3 +3 +5|2-8-18-5', 'Se|78.971|-2 +4 +6|2-8-18-6', 'Br|79.904|-1 +1 +5|2-8-18-7',
+    'Kr|83.798|0 +2|2-8-18-8', 'Rb|85.468|+1|2-8-18-8-1', 'Sr|87.62|+2|2-8-18-8-2', 'Y|88.906|+3|2-8-18-9-2', 'Zr|91.224|+4|2-8-18-10-2',
+    'Nb|92.906|+3 +5|2-8-18-12-1', 'Mo|95.95|+4 +6|2-8-18-13-1', 'Tc|98|+4 +7|2-8-18-13-2', 'Ru|101.07|+3 +4|2-8-18-15-1', 'Rh|102.91|+3|2-8-18-16-1',
+    'Pd|106.42|+2 +4|2-8-18-18', 'Ag|107.87|+1|2-8-18-18-1', 'Cd|112.41|+2|2-8-18-18-2', 'In|114.82|+3|2-8-18-18-3', 'Sn|118.71|+2 +4|2-8-18-18-4',
+    'Sb|121.76|-3 +3 +5|2-8-18-18-5', 'Te|127.60|-2 +4 +6|2-8-18-18-6', 'I|126.90|-1 +1 +5 +7|2-8-18-18-7', 'Xe|131.29|0 +2 +4 +6|2-8-18-18-8', 'Cs|132.91|+1|2-8-18-18-8-1',
+    'Ba|137.33|+2|2-8-18-18-8-2', 'La|138.91|+3|2-8-18-18-9-2', 'Ce|140.12|+3 +4|2-8-18-19-9-2', 'Pr|140.91|+3|2-8-18-21-8-2', 'Nd|144.24|+3|2-8-18-22-8-2',
+    'Pm|145|+3|2-8-18-23-8-2', 'Sm|150.36|+2 +3|2-8-18-24-8-2', 'Eu|151.96|+2 +3|2-8-18-25-8-2', 'Gd|157.25|+3|2-8-18-25-9-2', 'Tb|158.93|+3 +4|2-8-18-27-8-2',
+    'Dy|162.50|+3|2-8-18-28-8-2', 'Ho|164.93|+3|2-8-18-29-8-2', 'Er|167.26|+3|2-8-18-30-8-2', 'Tm|168.93|+3|2-8-18-31-8-2', 'Yb|173.05|+2 +3|2-8-18-32-8-2',
+    'Lu|174.97|+3|2-8-18-32-9-2', 'Hf|178.49|+4|2-8-18-32-10-2', 'Ta|180.95|+5|2-8-18-32-11-2', 'W|183.84|+4 +6|2-8-18-32-12-2', 'Re|186.21|+4 +7|2-8-18-32-13-2',
+    'Os|190.23|+4 +8|2-8-18-32-14-2', 'Ir|192.22|+3 +4|2-8-18-32-15-2', 'Pt|195.08|+2 +4|2-8-18-32-17-1', 'Au|196.97|+1 +3|2-8-18-32-18-1', 'Hg|200.59|+1 +2|2-8-18-32-18-2',
+    'Tl|204.38|+1 +3|2-8-18-32-18-3', 'Pb|207.2|+2 +4|2-8-18-32-18-4', 'Bi|208.98|+3 +5|2-8-18-32-18-5', 'Po|209|+2 +4|2-8-18-32-18-6', 'At|210|-1 +1|2-8-18-32-18-7',
+    'Rn|222|0|2-8-18-32-18-8', 'Fr|223|+1|2-8-18-32-18-8-1', 'Ra|226|+2|2-8-18-32-18-8-2', 'Ac|227|+3|2-8-18-32-18-9-2', 'Th|232.04|+4|2-8-18-32-18-10-2',
+    'Pa|231.04|+5|2-8-18-32-20-9-2', 'U|238.03|+4 +6|2-8-18-32-21-9-2', 'Np|237|+5|2-8-18-32-22-9-2', 'Pu|244|+4 +6|2-8-18-32-24-8-2', 'Am|243|+3 +4|2-8-18-32-25-8-2',
+    'Cm|247|+3|2-8-18-32-25-9-2', 'Bk|247|+3 +4|2-8-18-32-27-8-2', 'Cf|251|+3|2-8-18-32-28-8-2', 'Es|252|+3|2-8-18-32-29-8-2', 'Fm|257|+3|2-8-18-32-30-8-2',
+    'Md|258|+3|2-8-18-32-31-8-2', 'No|259|+2 +3|2-8-18-32-32-8-2', 'Lr|266|+3|2-8-18-32-32-8-3', 'Rf|267|+4|2-8-18-32-32-10-2', 'Db|268|+5|2-8-18-32-32-11-2',
+    'Sg|269|+6|2-8-18-32-32-12-2', 'Bh|270|+7|2-8-18-32-32-13-2', 'Hs|277|+8|2-8-18-32-32-14-2', 'Mt|278|+3|2-8-18-32-32-15-2', 'Ds|281|+4|2-8-18-32-32-17-1',
+    'Rg|282|+3|2-8-18-32-32-18-1', 'Cn|285|+2|2-8-18-32-32-18-2', 'Nh|286|+1 +3|2-8-18-32-32-18-3', 'Fl|289|+2 +4|2-8-18-32-32-18-4', 'Mc|290|+1 +3|2-8-18-32-32-18-5',
+    'Lv|293|+2 +4|2-8-18-32-32-18-6', 'Ts|294|-1 +1|2-8-18-32-32-18-7', 'Og|294|0 +2|2-8-18-32-32-18-8'
   ];
 
-  // Chemical Formulas & Molecular Masses Flowing in 3D Z-Space (18 unique formulas)
+  const TILE_COLOR_PALETTE = [
+    { r: 16, g: 185, b: 129 },   // Breaking Bad Viridian Emerald
+    { r: 132, g: 204, b: 22 },   // Chlorine / Barium Chartreuse Lime
+    { r: 34, g: 211, b: 238 },   // Copper(II) Sulfate Cyan
+    { r: 245, g: 158, b: 11 },   // Dichromate / Bromine Amber
+    { r: 168, g: 85, b: 247 },   // Permanganate Royal Violet
+    { r: 244, g: 63, b: 94 },    // Strontium / Thiocyanate Crimson
+    { r: 250, g: 204, b: 21 },   // Aurum / Lead Iodide Gold
+    { r: 56, g: 189, b: 248 },   // Argentum Sky Sapphire
+    { r: 236, g: 72, b: 153 },   // Cobalt Rose Magenta
+    { r: 45, g: 212, b: 191 }    // Platinum Teal Mint
+  ];
+
+  const ELEMENT_TILES = RAW_118_ELEMENTS.map((entry, idx) => {
+    const [sym, mass, ox, shells] = entry.split('|');
+    return {
+      sym,
+      num: String(idx + 1),
+      mass,
+      ox,
+      shells,
+      rgb: TILE_COLOR_PALETTE[idx % TILE_COLOR_PALETTE.length]
+    };
+  });
+
+  // Contiguous Periodic Table Blocks for 3D Receding Grid Walls (Breaking Bad Intro 00:02-00:06 Style)
+  const PERIODIC_GRID_BLOCKS = [
+    // Block 1: P-block Halogens & Noble Gases (Features Br #35 & Xe #54)
+    { cols: 3, rows: 3, indices: [15, 16, 17, 33, 34, 35, 51, 52, 53], highlightSlots: [4, 8] },
+    // Block 2: Alkali / Alkaline Earth / Early Transition (Features Ba #56 & Sr #38)
+    { cols: 4, rows: 3, indices: [18, 19, 20, 21, 36, 37, 38, 39, 54, 55, 56, 71], highlightSlots: [9, 5] },
+    // Block 3: 3d/4d/5d Transition Metals (Features Cr #24, Fe #26 & Pt #78)
+    { cols: 4, rows: 3, indices: [23, 24, 25, 26, 41, 42, 43, 44, 73, 74, 75, 77], highlightSlots: [0, 2, 11] },
+    // Block 4: Coinage & Precious Metals (Features Cu #29, Ag #47 & Au #79)
+    { cols: 4, rows: 3, indices: [27, 28, 29, 30, 45, 46, 47, 48, 77, 78, 79, 81], highlightSlots: [1, 5, 9] }
+  ];
+
+  // Chemical Formulas, Reactions & Breaking-Bad Giant Serif Fragments (32 unique entries)
   const CHEMICAL_FORMULAS = [
-    { text: 'C₁₀H₁₅N', sub: '149.24 g/mol • CHIRAL SYNTHESIS', rgb: { r: 52, g: 211, b: 153 } },
-    { text: 'CuSO₄·5H₂O', sub: '249.68 • [Cu(H₂O)₄]²⁺ AZURE', rgb: { r: 34, g: 211, b: 238 } },
-    { text: 'KMnO₄', sub: '158.034 • +7 PERMANGANATE VIOLET', rgb: { r: 192, g: 132, b: 252 } },
-    { text: 'K₂Cr₂O₇', sub: '294.185 • DICHROMATE AMBER', rgb: { r: 251, g: 191, b: 36 } },
-    { text: '[Fe(SCN)]²⁺', sub: 'BLOOD-RED COMPLEX • λ = 480nm', rgb: { r: 251, g: 113, b: 133 } },
-    { text: 'H₂SO₄', sub: '98.079 • ΔH° = -880 kJ/mol', rgb: { r: 163, g: 230, b: 53 } },
-    { text: 'Pb(NO₃)₂ + 2KI → PbI₂↓', sub: '461.01 • GOLDEN RAIN CRYSTALS', rgb: { r: 250, g: 204, b: 21 } },
-    { text: 'C₆H₁₂O₆', sub: '180.156 • HEXOSE RING', rgb: { r: 52, g: 211, b: 153 } },
-    { text: 'ΔG° = ΔH° - TΔS°', sub: 'GIBBS THERMODYNAMIC EQUILIBRIUM', rgb: { r: 56, g: 189, b: 248 } },
-    { text: 'k = A·e^(-Ea/RT)', sub: 'ARRHENIUS KINETICS CONSTANT', rgb: { r: 245, g: 158, b: 11 } },
-    { text: '1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰', sub: 'QUANTUM ELECTRON SHELLS • 2-8-18-7', rgb: { r: 16, g: 185, b: 129 } },
-    { text: '[Cu(NH₃)₄]²⁺', sub: 'TETRAAMMINE DEEP ROYAL SAPPHIRE', rgb: { r: 129, g: 140, b: 248 } },
-    { text: 'AgNO₃ + NaCl → AgCl↓', sub: '143.32 • Ksp = 1.77×10⁻¹⁰', rgb: { r: 45, g: 212, b: 191 } },
-    { text: 'CH₃COOH ⇌ CH₃COO⁻ + H⁺', sub: 'pKa = 4.76 • BUFFER SYSTEM', rgb: { r: 244, g: 114, b: 182 } },
-    { text: '[Co(H₂O)₆]²⁺ ⇌ [CoCl₄]²⁻', sub: 'LE CHATELIER THERMOCHROMIC SHIFT', rgb: { r: 236, g: 72, b: 153 } },
-    { text: 'E = E° - (RT/nF)·ln(Q)', sub: 'NERNST ELECTROCHEMICAL POTENTIAL', rgb: { r: 34, g: 211, b: 238 } },
-    { text: 'Na₂S₂O₃ + 2HCl → S↓ + SO₂↑', sub: 'COLLOIDAL SULFUR TYNDALL SCATTER', rgb: { r: 250, g: 204, b: 21 } },
-    { text: 'C₂₀H₁₄O₄', sub: '318.32 • PHENOLPHTHALEIN MAGENTA', rgb: { r: 244, g: 63, b: 94 } }
+    { text: 'C₁₀H₁₅N', sub: '149.24 g/mol • CHIRAL SYNTHESIS', rgb: { r: 52, g: 211, b: 153 }, bigFragment: true },
+    { text: 'C₁₀   H₁₅   N', sub: '149.24 • MOLECULAR MASS SPECTRUM', rgb: { r: 132, g: 204, b: 22 }, bigFragment: true },
+    { text: 'CuSO₄·5H₂O', sub: '249.68 • [Cu(H₂O)₄]²⁺ AZURE', rgb: { r: 34, g: 211, b: 238 }, bigFragment: false },
+    { text: 'KMnO₄', sub: '158.034 • +7 PERMANGANATE VIOLET', rgb: { r: 192, g: 132, b: 252 }, bigFragment: true },
+    { text: 'K₂Cr₂O₇', sub: '294.185 • DICHROMATE AMBER', rgb: { r: 251, g: 191, b: 36 }, bigFragment: true },
+    { text: '[Fe(SCN)]²⁺', sub: 'BLOOD-RED COMPLEX • λ = 480nm', rgb: { r: 251, g: 113, b: 133 }, bigFragment: false },
+    { text: 'H₂SO₄', sub: '98.079 • ΔH° = -880 kJ/mol', rgb: { r: 163, g: 230, b: 53 }, bigFragment: true },
+    { text: 'Pb(NO₃)₂ + 2KI → PbI₂↓', sub: '461.01 • GOLDEN RAIN CRYSTALS', rgb: { r: 250, g: 204, b: 21 }, bigFragment: false },
+    { text: 'C₆H₁₂O₆', sub: '180.156 • D-GLUCOSE HEXOSE RING', rgb: { r: 52, g: 211, b: 153 }, bigFragment: true },
+    { text: 'ΔG° = ΔH° - TΔS°', sub: 'GIBBS THERMODYNAMIC EQUILIBRIUM', rgb: { r: 56, g: 189, b: 248 }, bigFragment: false },
+    { text: 'k = A·e^(-Ea/RT)', sub: 'ARRHENIUS KINETICS CONSTANT', rgb: { r: 245, g: 158, b: 11 }, bigFragment: false },
+    { text: '1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰', sub: 'QUANTUM ELECTRON SHELLS • 2-8-18-7', rgb: { r: 16, g: 185, b: 129 }, bigFragment: false },
+    { text: '[Cu(NH₃)₄]²⁺', sub: 'TETRAAMMINE DEEP ROYAL SAPPHIRE', rgb: { r: 129, g: 140, b: 248 }, bigFragment: false },
+    { text: 'AgNO₃ + NaCl → AgCl↓', sub: '143.32 • Ksp = 1.77×10⁻¹⁰', rgb: { r: 45, g: 212, b: 191 }, bigFragment: false },
+    { text: 'CH₃COOH ⇌ CH₃COO⁻ + H⁺', sub: 'pKa = 4.76 • ACETATE BUFFER', rgb: { r: 244, g: 114, b: 182 }, bigFragment: false },
+    { text: '[Co(H₂O)₆]²⁺ ⇌ [CoCl₄]²⁻', sub: 'LE CHATELIER THERMOCHROMIC SHIFT', rgb: { r: 236, g: 72, b: 153 }, bigFragment: false },
+    { text: 'E = E° - (RT/nF)·ln(Q)', sub: 'NERNST ELECTROCHEMICAL POTENTIAL', rgb: { r: 34, g: 211, b: 238 }, bigFragment: false },
+    { text: 'Na₂S₂O₃ + 2HCl → S↓ + SO₂↑', sub: 'COLLOIDAL SULFUR TYNDALL SCATTER', rgb: { r: 250, g: 204, b: 21 }, bigFragment: false },
+    { text: 'C₂₀H₁₄O₄', sub: '318.32 • PHENOLPHTHALEIN MAGENTA', rgb: { r: 244, g: 63, b: 94 }, bigFragment: true },
+    { text: 'ĤΨ = EΨ', sub: 'SCHRÖDINGER WAVEFUNCTION ORBITAL', rgb: { r: 56, g: 189, b: 248 }, bigFragment: true },
+    { text: 'PV = nRT', sub: 'R = 8.314 J/(mol·K) • KINETIC GAS LAW', rgb: { r: 52, g: 211, b: 153 }, bigFragment: true },
+    { text: 'pH = pKa + log([A⁻]/[HA])', sub: 'HENDERSON-HASSELBALCH TITRATION', rgb: { r: 168, g: 85, b: 247 }, bigFragment: false },
+    { text: 'Fe³⁺ + 3OH⁻ → Fe(OH)₃↓', sub: '106.87 • FERRIC RUST PRECIPITATE', rgb: { r: 245, g: 158, b: 11 }, bigFragment: false },
+    { text: '2H₂O₂ → 2H₂O + O₂↑', sub: 'MnO₂ CATALYTIC DECOMPOSITION', rgb: { r: 45, g: 212, b: 191 }, bigFragment: false },
+    { text: 'C₈H₁₀N₄O₂', sub: '194.19 g/mol • TRIMETHYLXANTHINE', rgb: { r: 132, g: 204, b: 22 }, bigFragment: true },
+    { text: 'BaCl₂ + Na₂SO₄ → BaSO₄↓', sub: '233.39 • INSOLUBLE WHITE SULFATE', rgb: { r: 52, g: 211, b: 153 }, bigFragment: false },
+    { text: 'λ = h / (m·v)', sub: 'DE BROGLIE MATTER-WAVE DUALITY', rgb: { r: 192, g: 132, b: 252 }, bigFragment: false },
+    { text: 'C₇H₅N₃O₆', sub: '227.13 • EXOTHERMIC NITROAROMATIC', rgb: { r: 251, g: 113, b: 133 }, bigFragment: true }
   ];
 
   const getInterpolatedColor = (phase: number) => {
@@ -211,19 +270,43 @@ const CanvasParticles: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    const zMin = 0.52;
-    const zMax = 5.20;
+    const zMin = 0.38;
+    const zMax = 5.40;
     const zSpan = zMax - zMin;
-    const gridCols = 7;
-    const gridRows = 4;
+    const gridCols = 10;
+    const gridRows = 6;
+
+    // Sequential cursors so all 118 IUPAC elements & all formulas appear in an unbroken sequence
+    let seqElementCursor = 0;
+    let seqFormulaCursor = 0;
+    let seqGridStartCursor = 0;
+    const gridSheets: any[] = [];
 
     const sampleGridPos = (col: number, row: number) => {
-      const cellW = 1.88 / gridCols; // spans -0.94 to +0.94 across full viewport width
-      const cellH = 1.84 / gridRows; // spans -0.92 to +0.92 across full viewport height
+      const cellW = 1.92 / gridCols; // spans -0.96 to +0.96 across 100% viewport width
+      const cellH = 1.88 / gridRows; // spans -0.94 to +0.94 across 100% viewport height
       return {
-        nx: -0.94 + (col + 0.15 + Math.random() * 0.70) * cellW,
-        ny: -0.92 + (row + 0.15 + Math.random() * 0.70) * cellH
+        nx: -0.96 + (col + 0.14 + Math.random() * 0.72) * cellW,
+        ny: -0.94 + (row + 0.14 + Math.random() * 0.72) * cellH
       };
+    };
+
+    const buildGridSheetData = (startElemIdx: number) => {
+      const cols = 4;
+      const rows = 3;
+      const cells = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          // Step across periodic periods (+1 across columns, +18 across rows like real periodic groups)
+          const eIdx = (startElemIdx + c + r * 18) % ELEMENT_TILES.length;
+          const isHighlighted = (r === 1 && c === 1) || (r === 2 && c === 2);
+          cells.push({
+            tile: ELEMENT_TILES[eIdx],
+            isHighlighted
+          });
+        }
+      }
+      return { cols, rows, cells };
     };
 
     const initField = () => {
@@ -232,74 +315,104 @@ const CanvasParticles: React.FC = () => {
       trailSparksRef.current = [];
       smokeRef.current = [];
       chemFlowRef.current = [];
+      gridSheets.length = 0;
 
-      // 0A. Volumetric Chemical Smoke Plumes (Full-Screen Breaking Bad Atmospheric Fumes)
+      // 0A. Volumetric Chemical Smoke Plumes & Curly Vapor Tendrils (Breaking Bad 00:08-00:13 Fumes)
       const smokePalette = [
         { r: 16, g: 185, b: 129 },   // Viridian Emerald Smoke
-        { r: 132, g: 204, b: 22 },   // Chlorine / Lime Fume
+        { r: 163, g: 230, b: 53 },   // Breaking Bad Yellow-Green Chlorine Fume
         { r: 245, g: 158, b: 11 },   // Dichromate / Bromine Amber Vapor
         { r: 168, g: 85, b: 247 },   // Permanganate / Iodine Violet Mist
         { r: 6, g: 182, b: 212 },    // Copper Sulfate Cyan Haze
         { r: 244, g: 63, b: 94 }     // Strontium Rose Mist
       ];
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < 28; i++) {
         const sColor = smokePalette[i % smokePalette.length];
         smokeRef.current.push({
-          x: ((i + 0.5) / 22) * w + (Math.random() - 0.5) * 90,
+          x: ((i + 0.5) / 28) * w + (Math.random() - 0.5) * 80,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 14, // pixels per second
-          vy: -(8 + Math.random() * 12),  // slow upward waft in pixels per second
-          radius: 170 + Math.random() * 210,
-          alpha: 0.045 + Math.random() * 0.05,
-          pulseSpeed: 0.45 + Math.random() * 0.55,
+          vx: (Math.random() - 0.5) * 18,
+          vy: -(10 + Math.random() * 14),
+          radius: 160 + Math.random() * 220,
+          alpha: 0.055 + Math.random() * 0.055,
+          pulseSpeed: 0.5 + Math.random() * 0.6,
           pulsePhase: Math.random() * Math.PI * 2,
+          curlAngle: Math.random() * Math.PI * 2,
+          curlSpeed: (Math.random() - 0.5) * 0.35,
+          hasTendril: i % 2 === 0,
           rgb: sColor
         });
       }
 
-      // 0B. Full-Screen 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
-      // Unidirectional: every item glides slowly into the deep background until invisible, then respawns
-      const total3DItems = gridCols * gridRows; // 28 stratified full-screen sectors
-      let tileIdx = 0;
-      let formulaIdx = 0;
+      // 0B-1. 3D Receding Periodic Table Grid Walls (Breaking Bad Intro 00:02-00:06 Multi-Cell Lattice)
+      const numGridSheets = 3;
+      const sheetZMin = 0.55;
+      const sheetZMax = 4.15;
+      const sheetZSpan = sheetZMax - sheetZMin;
+      const sheetAnchors = [
+        { nx: -0.28, ny: -0.18 },
+        { nx: 0.22, ny: 0.16 },
+        { nx: -0.04, ny: -0.04 }
+      ];
+      for (let s = 0; s < numGridSheets; s++) {
+        const sheetData = buildGridSheetData(seqGridStartCursor);
+        seqGridStartCursor = (seqGridStartCursor + 7) % ELEMENT_TILES.length;
+        gridSheets.push({
+          nx: sheetAnchors[s].nx,
+          ny: sheetAnchors[s].ny,
+          z: sheetZMin + (s / numGridSheets) * sheetZSpan,
+          vz: 0.145, // Strictly uniform speed so sheets never overlap or disappear together
+          sheetZMin,
+          sheetZMax,
+          sheetZSpan,
+          ...sheetData
+        });
+      }
+
+      // 0B-2. High-Density 60-Item 3D Z-Conveyor Stream (All 118 Elements in Sequence + Formulas + 3D Structures)
+      // Strictly uniform Z-spacing & constant vz = 0.21 so items NEVER bunch up or disappear simultaneously!
+      const total3DItems = gridCols * gridRows; // 60 simultaneous 3D items across 10x6 screen sectors
+      const LOCKED_VZ = 0.21;
 
       for (let i = 0; i < total3DItems; i++) {
-        const col = i % gridCols;
-        const row = Math.floor(i / gridCols);
+        // Golden-ratio spatial permutation so consecutive Z-depth items appear in completely different screen sectors
+        const cellIndex = (i * 37) % total3DItems;
+        const col = cellIndex % gridCols;
+        const row = Math.floor(cellIndex / gridCols);
         const pos = sampleGridPos(col, row);
 
-        // Interleave unique periodic tiles (10), unique chemical formulas (14), and aromatic rings (4)
-        let kind: 'tile' | 'formula' | 'ring' = 'formula';
-        if (i % 7 === 0 || i % 7 === 3) {
-          kind = tileIdx < 10 ? 'tile' : 'formula';
-        } else if (i % 7 === 5) {
+        // 57% Periodic Element Tiles (cycling sequentially 1..118), 30% Chemical Formulas, 13% 3D Molecular Structures
+        const mod = i % 10;
+        let kind: 'tile' | 'formula' | 'ring' = 'tile';
+        if (mod === 1 || mod === 4 || mod === 8) {
+          kind = 'formula';
+        } else if (mod === 6) {
           kind = 'ring';
         }
 
-        const tileData = ELEMENT_TILES[tileIdx % ELEMENT_TILES.length];
-        if (kind === 'tile') tileIdx++;
+        const tileData = ELEMENT_TILES[seqElementCursor % ELEMENT_TILES.length];
+        if (kind === 'tile') seqElementCursor = (seqElementCursor + 1) % ELEMENT_TILES.length;
 
-        const formulaData = CHEMICAL_FORMULAS[formulaIdx % CHEMICAL_FORMULAS.length];
-        if (kind !== 'tile') formulaIdx++;
+        const formulaData = CHEMICAL_FORMULAS[seqFormulaCursor % CHEMICAL_FORMULAS.length];
+        if (kind !== 'tile') seqFormulaCursor = (seqFormulaCursor + 1) % CHEMICAL_FORMULAS.length;
 
         const rgb = kind === 'tile' ? tileData.rgb : formulaData.rgb;
-        // Golden-ratio depth staggering so adjacent screen cells are at completely different Z depths
-        const staggeredNormZ = (i * 0.61803398875) % 1;
 
         chemFlowRef.current.push({
           col,
           row,
           nx: pos.nx,
           ny: pos.ny,
-          z: zMin + staggeredNormZ * zSpan,
-          // Slow, hypnotic unidirectional recession into the deep background (~26-34 seconds full depth journey)
-          vz: 0.135 + Math.random() * 0.045,
+          // Strictly even Z-conveyor spacing from zMin to zMax — impossible to disappear simultaneously!
+          z: zMin + (i / total3DItems) * zSpan,
+          vz: LOCKED_VZ,
           kind,
+          structVariant: i % 4, // 0: Benzene, 1: Naphthalene Double Ring, 2: 3D Quantum Atom Orbitals, 3: Organic Skeletal Chain
           tile: tileData,
           formula: formulaData,
           rgb,
-          rot: (Math.random() - 0.5) * 0.35,
-          rotSpeed: (Math.random() - 0.5) * 0.12 // radians per second
+          rot: (Math.random() - 0.5) * 0.4,
+          rotSpeed: (Math.random() - 0.5) * 0.16
         });
       }
 
@@ -311,7 +424,7 @@ const CanvasParticles: React.FC = () => {
         '192, 132, 252', // Violet
         '251, 113, 133'  // Rose
       ];
-      const numNodes = Math.min(Math.floor((w * h) / 32000), 28);
+      const numNodes = Math.min(Math.floor((w * h) / 28000), 34);
       for (let i = 0; i < numNodes; i++) {
         particlesRef.current.push({
           x: Math.random() * w,
@@ -319,13 +432,13 @@ const CanvasParticles: React.FC = () => {
           vx: (Math.random() - 0.5) * 0.22,
           vy: (Math.random() - 0.5) * 0.22 - 0.06,
           size: Math.random() * 1.6 + 0.9,
-          alpha: Math.random() * 0.4 + 0.15,
+          alpha: Math.random() * 0.42 + 0.16,
           color: dustColors[i % dustColors.length]
         });
       }
 
       // 2. Radiant Gradient Sparks & Twinkling Star Flares
-      const numSparks = Math.min(Math.floor((w * h) / 36000), 22);
+      const numSparks = Math.min(Math.floor((w * h) / 32000), 26);
       for (let i = 0; i < numSparks; i++) {
         sparksRef.current.push({
           x: Math.random() * w,
@@ -371,12 +484,13 @@ const CanvasParticles: React.FC = () => {
       const mx = (mouse.x / 2 + 0.5) * w;
       const my = (mouse.y / 2 + 0.5) * h;
 
-      // 0A. Draw Billowing Volumetric Chemical Smoke Plumes Across Full Screen
+      // 0A. Draw Billowing Volumetric Chemical Smoke Plumes & Curly Fume Tendrils (Breaking Bad 00:08-00:13)
       const smokes = smokeRef.current;
       for (let i = 0; i < smokes.length; i++) {
         const sm = smokes[i];
-        sm.x += (sm.vx + Math.sin(time * 0.35 + sm.pulsePhase) * 10) * dt;
+        sm.x += (sm.vx + Math.sin(time * 0.4 + sm.pulsePhase) * 12) * dt;
         sm.y += sm.vy * dt;
+        sm.curlAngle += sm.curlSpeed * dt;
         if (sm.y < -sm.radius) {
           sm.y = h + sm.radius * 0.8;
           sm.x = Math.random() * w;
@@ -393,39 +507,154 @@ const CanvasParticles: React.FC = () => {
         ctx.beginPath();
         ctx.arc(sm.x, sm.y, sm.radius, 0, Math.PI * 2);
         ctx.fill();
+
+        // Curly Wispy Vapor Tendrils inside the plume
+        if (sm.hasTendril) {
+          ctx.save();
+          ctx.translate(sm.x, sm.y);
+          ctx.rotate(sm.curlAngle);
+          ctx.strokeStyle = `rgba(${sm.rgb.r}, ${sm.rgb.g}, ${sm.rgb.b}, ${liveSmokeAlpha * 1.15})`;
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          const r1 = sm.radius * 0.42;
+          ctx.moveTo(-r1, -r1 * 0.3);
+          ctx.bezierCurveTo(-r1 * 0.2, -r1 * 0.9, r1 * 0.3, r1 * 0.8, r1, r1 * 0.2);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
-      // 0B. Draw Full-Screen 3D Z-Space Flowing Chemical Formulas, Periodic Tiles & Benzene Rings
       const cx = w * 0.50;
       const cy = h * 0.50;
+
+      // 0B-1. Draw 3D Receding Periodic Table Grid Walls (Breaking Bad 00:02-00:06 Periodic Lattice)
+      for (let s = 0; s < gridSheets.length; s++) {
+        const sheet = gridSheets[s];
+        sheet.z += sheet.vz * dt;
+        if (sheet.z > sheet.sheetZMax) {
+          sheet.z = sheet.sheetZMin;
+          const nextData = buildGridSheetData(seqGridStartCursor);
+          seqGridStartCursor = (seqGridStartCursor + 9) % ELEMENT_TILES.length;
+          sheet.cells = nextData.cells;
+          sheet.nx = (Math.random() - 0.5) * 0.65;
+          sheet.ny = (Math.random() - 0.5) * 0.45;
+        }
+
+        const sNormZ = Math.max(0, Math.min(1, (sheet.z - sheet.sheetZMin) / sheet.sheetZSpan));
+        let sAlpha = 0;
+        if (sNormZ < 0.14) sAlpha = Math.pow(sNormZ / 0.14, 1.5);
+        else if (sNormZ <= 0.48) sAlpha = 1.0;
+        else if (sNormZ < 0.88) sAlpha = Math.pow(1.0 - (sNormZ - 0.48) / 0.40, 2.1);
+        else sAlpha = 0;
+
+        if (sAlpha <= 0.005) continue;
+
+        const sScale = 1.18 / sheet.z;
+        const sPull = 1.0 - sNormZ * 0.35;
+        const sheetX = cx + sheet.nx * (w * 0.46) * sPull - mouse.x * (16 * sScale);
+        const sheetY = cy + sheet.ny * (h * 0.44) * sPull - mouse.y * (12 * sScale);
+
+        ctx.save();
+        ctx.translate(sheetX, sheetY);
+        ctx.scale(sScale, sScale);
+
+        const cellSize = 74;
+        const gridW = sheet.cols * cellSize;
+        const gridH = sheet.rows * cellSize;
+        const startX = -gridW / 2;
+        const startY = -gridH / 2;
+        const baseA = sAlpha * 0.28;
+
+        for (let idx = 0; idx < sheet.cells.length; idx++) {
+          const cCol = idx % sheet.cols;
+          const cRow = Math.floor(idx / sheet.cols);
+          const cell = sheet.cells[idx];
+          const t = cell.tile;
+          const x0 = startX + cCol * cellSize;
+          const y0 = startY + cRow * cellSize;
+
+          if (cell.isHighlighted) {
+            ctx.fillStyle = `rgba(${t.rgb.r}, ${t.rgb.g}, ${t.rgb.b}, ${baseA * 1.1})`;
+            ctx.strokeStyle = `rgba(${t.rgb.r}, ${t.rgb.g}, ${t.rgb.b}, ${baseA * 2.5})`;
+            ctx.lineWidth = 1.8;
+          } else {
+            ctx.fillStyle = `rgba(16, 185, 129, ${baseA * 0.12})`;
+            ctx.strokeStyle = `rgba(203, 213, 225, ${baseA * 0.95})`;
+            ctx.lineWidth = 1.0;
+          }
+          ctx.strokeRect(x0, y0, cellSize, cellSize);
+          ctx.fillRect(x0, y0, cellSize, cellSize);
+
+          // Mass (Top-Left) & Oxidation (Top-Right)
+          ctx.fillStyle = `rgba(241, 245, 249, ${baseA * 1.6})`;
+          ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(t.mass, x0 + 5, y0 + 11);
+
+          ctx.font = '6.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(t.ox, x0 + cellSize - 4, y0 + 11);
+
+          // Big Periodic Symbol (Center)
+          ctx.fillStyle = cell.isHighlighted
+            ? `rgba(255, 255, 255, ${Math.min(0.95, baseA * 2.9)})`
+            : `rgba(226, 232, 240, ${baseA * 1.75})`;
+          ctx.font = 'bold 30px Georgia, "Times New Roman", serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(t.sym, x0 + cellSize * 0.48, y0 + 44);
+
+          // Atomic Number (Bottom-Left) & Electron Shells (Bottom-Right)
+          ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(t.num, x0 + 5, y0 + cellSize - 6);
+
+          ctx.font = '6px "JetBrains Mono", monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(t.shells, x0 + cellSize - 4, y0 + cellSize - 6);
+        }
+
+        ctx.restore();
+      }
+
+      // 0B-2. Draw Full-Screen 60-Item 3D Z-Conveyor Stream (All 118 Elements in Sequence + Formulas + 3D Structures)
       const chemItems = chemFlowRef.current;
 
       for (let i = 0; i < chemItems.length; i++) {
         const item = chemItems[i];
-        // Unidirectional slow drift deep into the background
+        // Unidirectional locked-phase drift deep into the background
         item.z += item.vz * dt;
         item.rot += item.rotSpeed * dt;
 
         // Respawn at near plane ONLY after receding all the way past zMax (where alpha is already 0)
+        // Advance sequentially to the next element in the 118-element Periodic Table!
         if (item.z > zMax) {
-          item.z = zMin;
+          item.z -= zSpan;
           const nextPos = sampleGridPos(item.col, item.row);
           item.nx = nextPos.nx;
           item.ny = nextPos.ny;
+          if (item.kind === 'tile') {
+            item.tile = ELEMENT_TILES[seqElementCursor % ELEMENT_TILES.length];
+            item.rgb = item.tile.rgb;
+            seqElementCursor = (seqElementCursor + 1) % ELEMENT_TILES.length;
+          } else {
+            item.formula = CHEMICAL_FORMULAS[seqFormulaCursor % CHEMICAL_FORMULAS.length];
+            item.rgb = item.formula.rgb;
+            seqFormulaCursor = (seqFormulaCursor + 1) % CHEMICAL_FORMULAS.length;
+          }
         }
 
         // Normalized depth progress (0.0 at near plane -> 1.0 at deep far plane)
         const normZ = Math.max(0, Math.min(1, (item.z - zMin) / zSpan));
 
-        // Smooth fade-in from foreground mist, sustained clarity in mid-field,
-        // and complete fade-out into deep background (0.0 alpha from normZ >= 0.86 to 1.0)
+        // Smooth fade-in from foreground, wide full-clarity plateau (0.10 to 0.56),
+        // and complete fade-out into deep background (0.0 alpha from normZ >= 0.88 to 1.0)
         let depthAlpha = 0;
-        if (normZ < 0.15) {
-          depthAlpha = Math.pow(normZ / 0.15, 1.5);
-        } else if (normZ <= 0.36) {
+        if (normZ < 0.10) {
+          depthAlpha = Math.pow(normZ / 0.10, 1.4);
+        } else if (normZ <= 0.56) {
           depthAlpha = 1.0;
-        } else if (normZ < 0.86) {
-          depthAlpha = Math.pow(1.0 - (normZ - 0.36) / 0.50, 2.2);
+        } else if (normZ < 0.88) {
+          depthAlpha = Math.pow(1.0 - (normZ - 0.56) / 0.32, 2.1);
         } else {
           depthAlpha = 0.0;
         }
@@ -433,95 +662,167 @@ const CanvasParticles: React.FC = () => {
         // Skip drawing while completely invisible at the far end of the Z-tunnel
         if (depthAlpha <= 0.004) continue;
 
-        // Visual size shrinks continuously with 3D depth (from ~2.0x in foreground down to ~0.20x far away)
-        const perspectiveScale = 1.05 / item.z;
+        // Visual size shrinks continuously with 3D depth (from ~2.6x in foreground down to ~0.18x far away)
+        const perspectiveScale = 1.02 / item.z;
         // Gentle radial perspective pull toward vanishing point (cx, cy) while preserving 100% full-screen coverage
-        const pull = 1.0 - normZ * 0.30;
+        const pull = 1.0 - normZ * 0.32;
 
-        const sx = cx + item.nx * (w * 0.52) * pull - mouse.x * (18 * perspectiveScale);
-        const sy = cy + item.ny * (h * 0.52) * pull - mouse.y * (14 * perspectiveScale);
+        const sx = cx + item.nx * (w * 0.53) * pull - mouse.x * (18 * perspectiveScale);
+        const sy = cy + item.ny * (h * 0.53) * pull - mouse.y * (14 * perspectiveScale);
 
-        if (sx < -220 || sx > w + 220 || sy < -160 || sy > h + 160) continue;
+        if (sx < -240 || sx > w + 240 || sy < -180 || sy > h + 180) continue;
 
         ctx.save();
         ctx.translate(sx, sy);
         ctx.scale(perspectiveScale, perspectiveScale);
 
         const { r, g, b } = item.rgb;
-        const alpha = depthAlpha * 0.56;
+        const alpha = depthAlpha * 0.78;
 
         if (item.kind === 'tile') {
-          // Periodic Table Element Tile (Breaking Bad Intro Style without show title)
-          const boxSize = 66;
+          // Periodic Table Element Tile (Breaking Bad Intro Style with rich glowing glass fill)
+          const boxSize = 68;
           const half = boxSize / 2;
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.22})`;
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.95})`;
-          ctx.lineWidth = 1.6;
+          const tileGrad = ctx.createLinearGradient(-half, -half, half, half);
+          tileGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha * 0.42})`);
+          tileGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${alpha * 0.22})`);
+          tileGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${alpha * 0.36})`);
+          ctx.fillStyle = tileGrad;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, alpha * 1.15)})`;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.roundRect(-half, -half, boxSize, boxSize, 6);
+          ctx.roundRect(-half, -half, boxSize, boxSize, 5);
           ctx.fill();
           ctx.stroke();
 
+          // Inner subtle frame line like Breaking Bad Br/Ba tile
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.28})`;
+          ctx.lineWidth = 0.7;
+          ctx.strokeRect(-half + 3, -half + 3, boxSize - 6, boxSize - 6);
+
           // Atomic Mass (Top-Left) & Oxidation States (Top-Right)
-          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.85})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.95, alpha * 1.05)})`;
           ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
           ctx.textAlign = 'left';
           ctx.fillText(item.tile.mass, -half + 5, -half + 11);
 
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.95})`;
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, alpha * 1.15)})`;
           ctx.font = '7px "JetBrains Mono", monospace';
           ctx.textAlign = 'right';
           ctx.fillText(item.tile.ox, half - 5, -half + 11);
 
           // Main Element Symbol (Center)
-          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.95, alpha * 1.35)})`;
-          ctx.font = 'bold 28px Georgia, "Times New Roman", serif';
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, alpha * 1.35)})`;
+          ctx.font = 'bold 29px Georgia, "Times New Roman", serif';
           ctx.textAlign = 'center';
           ctx.fillText(item.tile.sym, 0, 8);
 
           // Atomic Number (Bottom-Left) & Electron Shells (Bottom-Right)
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 1.1})`;
-          ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, alpha * 1.25)})`;
+          ctx.font = 'bold 10px "JetBrains Mono", monospace';
           ctx.textAlign = 'left';
           ctx.fillText(item.tile.num, -half + 5, half - 6);
 
-          ctx.fillStyle = `rgba(226, 232, 240, ${alpha * 0.75})`;
+          ctx.fillStyle = `rgba(241, 245, 249, ${alpha * 0.9})`;
           ctx.font = '6.5px "JetBrains Mono", monospace';
           ctx.textAlign = 'right';
           ctx.fillText(item.tile.shells, half - 4, half - 6);
         } else if (item.kind === 'ring') {
-          // 3D Rotating Benzene / Aromatic Hexagonal Ring
+          // 4 Varieties of 3D Chemical Structures: Benzene, Naphthalene, Quantum Atom Orbitals, Skeletal Chain
           ctx.rotate(item.rot);
-          const rad = 28;
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.85})`;
-          ctx.lineWidth = 1.6;
-          ctx.beginPath();
-          for (let v = 0; v < 6; v++) {
-            const ang = (v * Math.PI) / 3;
-            const vx = Math.cos(ang) * rad;
-            const vy = Math.sin(ang) * rad;
-            if (v === 0) ctx.moveTo(vx, vy);
-            else ctx.lineTo(vx, vy);
-          }
-          ctx.closePath();
-          ctx.stroke();
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.95})`;
+          ctx.lineWidth = 1.7;
 
-          // Inner aromatic delocalized pi-ring
-          ctx.beginPath();
-          ctx.arc(0, 0, rad * 0.58, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.55})`;
-          ctx.lineWidth = 1.1;
-          ctx.stroke();
+          if (item.structVariant === 0) {
+            // Aromatic Benzene Ring
+            const rad = 28;
+            ctx.beginPath();
+            for (let v = 0; v < 6; v++) {
+              const ang = (v * Math.PI) / 3;
+              const vx = Math.cos(ang) * rad;
+              const vy = Math.sin(ang) * rad;
+              if (v === 0) ctx.moveTo(vx, vy);
+              else ctx.lineTo(vx, vy);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(0, 0, rad * 0.58, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha * 0.65})`;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          } else if (item.structVariant === 1) {
+            // Naphthalene Fused Double Aromatic Ring with Substituent (-OH)
+            const rad = 22;
+            const offset = rad * Math.sqrt(3) * 0.5;
+            for (const cxOff of [-offset, offset]) {
+              ctx.beginPath();
+              for (let v = 0; v < 6; v++) {
+                const ang = (v * Math.PI) / 3 + Math.PI / 6;
+                const vx = cxOff + Math.cos(ang) * rad;
+                const vy = Math.sin(ang) * rad;
+                if (v === 0) ctx.moveTo(vx, vy);
+                else ctx.lineTo(vx, vy);
+              }
+              ctx.closePath();
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(cxOff, 0, rad * 0.52, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+          } else if (item.structVariant === 2) {
+            // 3D Rutherford / Bohr Quantum Electron Orbitals
+            for (let o = 0; o < 3; o++) {
+              ctx.save();
+              ctx.rotate((o * Math.PI) / 3);
+              ctx.beginPath();
+              ctx.ellipse(0, 0, 32, 11, 0, 0, Math.PI * 2);
+              ctx.stroke();
+              const eAng = time * 1.8 + o * 2.1;
+              ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, alpha * 1.3)})`;
+              ctx.beginPath();
+              ctx.arc(Math.cos(eAng) * 32, Math.sin(eAng) * 11, 2.5, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, alpha * 1.3)})`;
+            ctx.beginPath();
+            ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Organic Skeletal Carbon Chain with =O and -NH₂ functional groups
+            ctx.beginPath();
+            ctx.moveTo(-34, 10);
+            ctx.lineTo(-18, -8);
+            ctx.lineTo(0, 10);
+            ctx.lineTo(18, -8);
+            ctx.lineTo(34, 10);
+            ctx.stroke();
+            // Double bond =O at peak
+            ctx.beginPath();
+            ctx.moveTo(16, -8);
+            ctx.lineTo(16, -24);
+            ctx.moveTo(20, -8);
+            ctx.lineTo(20, -24);
+            ctx.stroke();
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 1.1})`;
+            ctx.font = 'bold 10px Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('O', 18, -27);
+            ctx.fillText('NH₂', 44, 14);
+          }
         } else {
-          // 3D Flowing Chemical Formula & Molecular Weight
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(0.9, alpha * 1.25)})`;
-          ctx.font = 'bold 21px Georgia, "Times New Roman", serif';
+          // 3D Flowing Chemical Formula & Molecular Weight (Breaking Bad 00:00-00:02 Giant Serif Style)
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(0.96, alpha * 1.25)})`;
+          ctx.font = item.formula.bigFragment
+            ? 'bold 28px Georgia, "Times New Roman", serif'
+            : 'bold 22px Georgia, "Times New Roman", serif';
           ctx.textAlign = 'center';
           ctx.fillText(item.formula.text, 0, 0);
 
-          ctx.fillStyle = `rgba(226, 232, 240, ${alpha * 0.8})`;
-          ctx.font = '9px "JetBrains Mono", monospace';
-          ctx.fillText(item.formula.sub, 0, 14);
+          ctx.fillStyle = `rgba(241, 245, 249, ${alpha * 0.92})`;
+          ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+          ctx.fillText(item.formula.sub, 0, 15);
         }
 
         ctx.restore();
